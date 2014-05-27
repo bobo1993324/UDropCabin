@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import QtWebKit 3.0
 import "components"
 
 /*!
@@ -12,7 +11,7 @@ MainView {
     objectName: "mainView"
 
     // Note! applicationName needs to match the "name" field of the click manifest
-    applicationName: "com.ubuntu.developer..UDropCabin"
+    applicationName: "com.ubuntu.developer.bobo1993324.udropcabin"
 
     /*
      This property enables the application to change orientation
@@ -23,12 +22,13 @@ MainView {
     width: units.gu(100)
     height: units.gu(75)
 
-    Page {
-        id: loginPage
-        WebView {
-            anchors.fill: parent
-            url: "https://www.dropbox.com/1/oauth2/authorize?response_type=token&client_id=o28bortadg3cjbt&redirect_uri=http://localhost"
-            onUrlChanged: console.log(url)
-        }
+    Settings {
+        id: settings
     }
+
+    PageStack {
+        id: pageStack
+        Component.onCompleted: push(Qt.resolvedUrl("ui/FilesPage.qml"))
+    }
+
 }

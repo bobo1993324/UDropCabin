@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=uDropCabin
+Exec=/usr/bin/qmlscene $@ /usr/share/uDropCabin/uDropCabin.qml
+Icon=qmlscene
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
