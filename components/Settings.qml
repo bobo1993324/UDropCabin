@@ -1,9 +1,7 @@
 import QtQuick 2.0
 import U1db 1.0 as U1db
 Item {
-    property string accessToken;
-
-    Component.onCompleted: load();
+    property string accessToken: ""
     U1db.Database {
         id: aDatabase
         path: "aU1DbDatabase"

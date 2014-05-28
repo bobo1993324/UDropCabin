@@ -11,3 +11,38 @@ function queryTokenUrl(url) {
     }
     return returnVal;
 };
+
+function getUserInfo(token, callback) {
+    var request = new XMLHttpRequest();
+    request.open("GET", "https://api.dropbox.com/1/account/info");
+    request.setRequestHeader("Authorization", "Bearer " + token);
+    request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+            var tmp = eval(request.responseText)
+            callback(tmp);
+        }
+    }
+    request.send();
+}
+
+function getFileList(path, token, callback) {
+    var request = new XMLHttpRequest();
+    var root = "dropbox";
+    request.open("GET", "https://api.dropbox.com/1/metadata/" + root + "/" + path);
+    request.setRequestHeader("Authorization", "Bearer " + token);
+    request.onreadystatechange = function () {
+        if (request.readyState == 4) {
+            var tmp = eval(request.responseText)
+            callback(tmp);
+        }
+    }
+    request.send();
+}
+
+function getParentPath(path) {
+    var returnVal = path.substring(0, path.lastIndexOf("/"));
+    if (returnVal == "")
+        return "/";
+    else
+        return returnVal;
+}
