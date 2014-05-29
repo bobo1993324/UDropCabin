@@ -15,7 +15,7 @@ Page {
             if (returnVal.hasOwnProperty("access_token")) {
                 settings.accessToken = returnVal.access_token;
                 console.log("setAccessToken to " + settings.accessToken)
-                settings.save();
+                pageStack.pop();
             }
         }
     }

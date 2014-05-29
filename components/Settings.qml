@@ -2,6 +2,10 @@ import QtQuick 2.0
 import U1db 1.0 as U1db
 Item {
     property string accessToken: ""
+    onAccessTokenChanged: {
+        settings.save();
+    }
+
     U1db.Database {
         id: aDatabase
         path: "aU1DbDatabase"
@@ -30,5 +34,11 @@ Item {
         console.log (JSON.stringify(settingsDoc) + " " + accessToken)
         settingsDoc["accessToken"] = accessToken;
         aDocument.contents = settingsDoc;
+    }
+
+    Component.onCompleted: {
+        settings.load()
+        if (settings.accessToken == "")
+            pageStack.push(Qt.resolvedUrl("../ui/LoginPage.qml"));
     }
 }

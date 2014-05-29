@@ -62,12 +62,10 @@ Page {
         }
     }
 
-    Component.onCompleted: {
-        settings.load();
-        if (settings.accessToken !== "") {
+    Connections {
+        target: settings
+        onAccessTokenChanged: {
             Utils.getFileList(fileModel.currentPath, settings.accessToken, fileModel.setFileModel);
-        } else {
-            console.log("needs to log in");
         }
     }
 }
