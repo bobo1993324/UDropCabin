@@ -11,9 +11,6 @@ Page {
         function loadDir(currentPath) {
             if (settings.accessToken !== "") {
                 Utils.getFileList(fileModel.currentPath, settings.accessToken, fileModel.setFileModel);
-            } else {
-                settings.load();
-                console.log("needs to log in");
             }
         }
         function setFileModel(value) {
@@ -36,6 +33,8 @@ Page {
             onClicked: {
                 if (model.is_dir) {
                     fileModel.currentPath = model.path
+                } else {
+                    pageStack.push(Qt.resolvedUrl("FileDetailPage.qml"), {file: fileModel.get(index)})
                 }
             }
         }

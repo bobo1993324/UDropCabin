@@ -46,3 +46,17 @@ function getParentPath(path) {
     else
         return returnVal;
 }
+
+function downloadFile(path, token, callback) {
+    var request = new XMLHttpRequest();
+    var root = "dropbox";
+    request.open("GET", "https://api-content.dropbox.com/1/files/" + root + "/" + path);
+    request.setRequestHeader("Authorization", "Bearer " + token);
+    request.onreadystatechange = function () {
+        console.log(request.responseText.length)
+        if (request.readyState == 4) {
+            callback(request.responseText);
+        }
+    }
+    request.send();
+}
