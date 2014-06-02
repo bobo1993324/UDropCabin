@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import "components"
+import UDropCabin 1.0
 
 /*!
     \brief MainView with a Label and Button elements.
@@ -28,7 +29,12 @@ MainView {
 
     PageStack {
         id: pageStack
-        Component.onCompleted: push(Qt.resolvedUrl("ui/FilesPage.qml"))
+        Component.onCompleted: {
+            push(Qt.resolvedUrl("ui/FilesPage.qml"))
+        }
     }
 
+    MyType {
+        id: fileModel
+    }
 }

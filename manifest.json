@@ -7,7 +7,7 @@
     "hooks": {
         "uDropCabin": {
             "apparmor": "uDropCabin.json",
-			"content-hub": "uDropCabin-content.json",
+            "content-hub": "uDropCabin-content.json",
             "desktop": "uDropCabin.desktop"
         }
     },

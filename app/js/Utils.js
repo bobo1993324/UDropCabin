@@ -47,16 +47,22 @@ function getParentPath(path) {
         return returnVal;
 }
 
-function downloadFile(path, token, callback) {
+function downloadFile(path, token, callback, reportProgress) {
     var request = new XMLHttpRequest();
     var root = "dropbox";
-    request.open("GET", "https://api-content.dropbox.com/1/files/" + root + "/" + path);
+    request.open("GET", "https://api-content.dropbox.com/1/files/" + root + "/" + path, true);
+    request.responseType = 'arraybuffer';
     request.setRequestHeader("Authorization", "Bearer " + token);
+
     request.onreadystatechange = function () {
-        console.log(request.responseText.length)
+        console.log(request.status + request.response.byteLength);
         if (request.readyState == 4) {
-            callback(request.responseText);
+            console.log(request.response);
+            callback(request.response);
+        } else {
+            reportProgress(request.responseText.length)
         }
     }
     request.send();
 }
+
