@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=UDropCabin
 Comment=My project description
-Exec=@EXEC@
-Icon=@ICON@
+Exec=qmlscene $@ share/qml/UDropCabin/UDropCabin.qml
+Icon=.//share/app/UDropCabin.png
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
