@@ -35,7 +35,8 @@ Page {
             control: Button {
                 text: "Transfer"
                 onClicked: {
-                    mainView.transferItemList = [transferComponent.createObject(mainView, {"url": "file:///home/phablet/.local/share/com.ubuntu.developer/bobo1993324.udropcabin/Documents/" + file.path}) ]
+					console.log("file:///home/phablet/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + file.path)
+                    mainView.transferItemList = [transferComponent.createObject(mainView, {"url": "file:///home/phablet/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + file.path}) ]
                     mainView.contentTransfer.items = mainView.transferItemList;
                     mainView.contentTransfer.state = ContentTransfer.Charged;
                 }
