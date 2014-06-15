@@ -9,7 +9,8 @@ Page {
     signal accessGranted()
     WebView {
         id: webView
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
 //        url: "https://www.dropbox.com/1/oauth2/authorize?response_type=token&client_id=o28bortadg3cjbt&redirect_uri=http://localhost"
         onUrlChanged: {
             console.log(url);
@@ -26,5 +27,4 @@ Page {
 //            }
         }
     }
-	flickable: webView
 }
