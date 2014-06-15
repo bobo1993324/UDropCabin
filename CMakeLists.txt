@@ -19,6 +19,6 @@ add_executable(udropcabin ${SRC})
 include_directories("${QtDropboxDir}/src")
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-qt5_use_modules(udropcabin Core Quick Xml Network)
 
-target_link_libraries(udropcabin ${QtDropboxDir}/libQtDropbox.so)
+target_link_libraries(udropcabin ${QtDropboxDir}/libQtDropbox.a)
+qt5_use_modules(udropcabin Core Quick Xml Network)

@@ -63,6 +63,7 @@ MainView {
             console.log("access granted")
             //request access
             QDropbox.requestAccessToken();
+            pageStack.pop();
         }
     }
 
@@ -71,8 +72,6 @@ MainView {
         onRequestTokenFinished:  {
             console.log("request token finished")
             QDropbox.requestAccessToken();
-//            console.log(QDropbox.authorizeLink)
-//            pageStack.push(Qt.resolvedUrl("./ui/LoginPage.qml"), {url: QDropbox.authorizeLink});
         }
         onAccessTokenFinished: {
             console.log("accessTokenFinished");
