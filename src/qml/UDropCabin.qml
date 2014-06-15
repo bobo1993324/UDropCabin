@@ -62,8 +62,18 @@ MainView {
         onAccessGranted: {
             console.log("access granted")
             //request access
-            QDropbox.requestAccessToken();
+            timer.start()
             pageStack.pop();
+//            afterAccessGranted();
+        }
+    }
+
+    Timer {
+        id: timer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            QDropbox.requestAccessToken();
         }
     }
 
