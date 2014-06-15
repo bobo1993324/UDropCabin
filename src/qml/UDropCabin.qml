@@ -23,7 +23,8 @@ MainView {
 
     width: units.gu(100)
     height: units.gu(75)
-    property var accountInfo: ({});
+    property var accountInfo: ({})
+    property var fileMetaInfo: ({})
     Settings {
         id: settings
         onLoadFinished: {
@@ -33,7 +34,7 @@ MainView {
                 console.log("Load token")
                 QDropbox.token = settings.token
                 QDropbox.tokenSecret = settings.tokenSecret
-                QDropbox.requestAccountInfo();
+                afterAccessGranted();
             } else {
                 console.log("request Token")
                 QDropbox.requestToken();
@@ -70,6 +71,7 @@ MainView {
             settings.token = token;
             settings.tokenSecret = secret;
             settings.save();
+            afterAccessGranted();
         }
         onTokenExpired: {
             console.log("token expired");
@@ -81,5 +83,15 @@ MainView {
             accountInfo = eval(accountJson)
             console.log(JSON.stringify(accountInfo))
         }
+        onMetadataReceived: {
+            console.log("file meta recieved")
+            fileMetaInfo = eval(metadataJson);
+            console.log(JSON.stringify(metadataJson))
+        }
+    }
+
+    function afterAccessGranted() {
+        QDropbox.requestAccountInfo();
+        QDropbox.requestMetadata("/dropbox/");
     }
 }
