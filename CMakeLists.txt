@@ -1,6 +1,9 @@
 project(udropcabin)
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(SRC src/main.cpp)
+set(SRC
+    src/main.cpp
+    src/downloadfile.cpp
+)
 
 set(CMAKE_AUTOMOC ON)
 

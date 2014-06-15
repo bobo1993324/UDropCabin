@@ -4,23 +4,6 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 import "../js/Utils.js" as Utils
 Page {
     title: mainView.fileMetaInfo.path
-//    ListModel {
-//        id: fileModel
-//        property string currentPath: "/"
-//        onCurrentPathChanged: fileModel.loadDir(currentPath);
-//        function loadDir(currentPath) {
-//            if (settings.accessToken !== "") {
-//                Utils.getFileList(fileModel.currentPath, settings.accessToken, fileModel.setFileModel);
-//            }
-//        }
-//        function setFileModel(value) {
-//            fileModel.clear();
-//            var tmp = value.contents;
-//            for (var i in tmp) {
-//                fileModel.append(tmp[i]);
-//            }
-//        }
-//    }
     ListView {
         id: dirView
         anchors.fill: parent

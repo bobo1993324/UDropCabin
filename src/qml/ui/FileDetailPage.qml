@@ -4,7 +4,6 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 import "../js/Utils.js" as Utils
 Page {
     property var file
-    property bool isDownloading: false;
     title: file.path
     Column {
         width: parent.width
@@ -21,34 +20,21 @@ Page {
             }
         }
         ListItem.Standard {
-            control: Row {
-                height: downloadButton.height
-                spacing: units.gu(2)
-                Button {
-                    id: downloadButton
-                    text: "Download"
-                    visible: !isDownloading
-                    onClicked: {
-                        downloadProgressBar.value = 0;
-                        isDownloading = true;
-                        Utils.downloadFile(file.path, settings.accessToken, saveFile, reportProgress);
-                    }
-                }
-                ProgressBar {
-                    id: downloadProgressBar
-                    visible: isDownloading
-                    minimumValue: 0
-                    maximumValue: file.bytes
+            control:
+            Button {
+                id: downloadButton
+                text: DownloadFile.fileExists(file.path) ? "Saved" : "Download"
+                onClicked: {
+                    DownloadFile.download(file.path);
                 }
             }
         }
     }
-    function saveFile(fileContent) {
-        fileModel.saveFile(file.path, fileContent);
-        console.log("TODO openFile");
-        isDownloading = false;
-    }
-    function reportProgress(sizeDownloaded) {
-        downloadProgressBar.value = sizeDownloaded;
+    Connections {
+        target: DownloadFile
+        onDownloadFinished: {
+            downloadButton.text = "Saved";
+            downloadButton.enabled = false;
+        }
     }
 }
