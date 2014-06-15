@@ -40,7 +40,7 @@ Page {
 //        }
 //    }
 
-//    tools: ToolbarItems {
+    tools: ToolbarItems {
 //        back: ToolbarButton {
 //            visible: fileModel.currentPath !== "/"
 //            action: Action {
@@ -51,15 +51,15 @@ Page {
 //            }
 //        }
 
-//        ToolbarButton {
-//            action: Action {
-//                text: "Settings"
-//                onTriggered: {
-//                    pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-//                }
-//            }
-//        }
-//    }
+        ToolbarButton {
+            action: Action {
+                text: "Settings"
+                onTriggered: {
+                    pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+                }
+            }
+        }
+    }
 
 //    Connections {
 //        target: settings
