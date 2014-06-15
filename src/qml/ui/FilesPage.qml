@@ -30,50 +30,20 @@ Page {
             text: modelData.path
             progression: modelData.is_dir
             onClicked: {
-                QDropbox.requestMetadata("/dropbox"+ modelData.path);
+                if (modelData.is_dir)
+                    QDropbox.requestMetadata("/dropbox"+ modelData.path);
+                else
+                    pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: modelData})
             }
         }
     }
-    Flickable {
-        id: flick
-        visible: !dirView.visible
-        anchors.fill: parent
-        Column {
-            width: parent.width
-            ListItem.Standard {
-                text: "Size"
-                control: Label {
-                    text: mainView.fileMetaInfo.size
-                }
-            }
-            ListItem.Standard {
-                text: "Last modified"
-                control: Label {
-                    text: mainView.fileMetaInfo.modified
-                }
-            }
-        }
-    }
-    flickable: dirView.visible ? dirView : flick
-
-//        delegate: ListItem.Standard {
-//            text: model.path
-//            onClicked: {
-//                if (model.is_dir) {
-//                    fileModel.currentPath = model.path
-//                } else {
-//                    pageStack.push(Qt.resolvedUrl("FileDetailPage.qml"), {file: fileModel.get(index)})
-//                }
-//            }
-//        }
 
     tools: ToolbarItems {
         back: ToolbarButton {
             visible: mainView.fileMetaInfo.path !== "/"
             action: Action {
-                text: mainView.fileMetaInfo.is_dir ? "Up": "Back"
+                text: "Up"
                 onTriggered: {
-                    console.log(Utils.getParentPath(mainView.fileMetaInfo.path))
                     QDropbox.requestMetadata("/dropbox/" + Utils.getParentPath(mainView.fileMetaInfo.path))
                 }
             }
@@ -88,11 +58,4 @@ Page {
             }
         }
     }
-
-//    Connections {
-//        target: settings
-//        onAccessTokenChanged: {
-//            Utils.getFileList(fileModel.currentPath, settings.accessToken, fileModel.setFileModel);
-//        }
-//    }
 }
