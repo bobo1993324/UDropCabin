@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Content 0.1
 import "components"
 import "ui"
 
@@ -25,6 +26,13 @@ MainView {
     height: units.gu(75)
     property var accountInfo: ({})
     property var fileMetaInfo: ({})
+    property var contentTransfer;
+    property list<ContentItem> transferItemList
+    Component {
+        id: transferComponent
+        ContentItem {}
+    }
+
     Settings {
         id: settings
         onLoadFinished: {
@@ -45,7 +53,7 @@ MainView {
     PageStack {
         id: pageStack
         Component.onCompleted: {
-            push(Qt.resolvedUrl("ui/FilesPage.qml"))
+            pageStack.push(Qt.resolvedUrl("./ui/FilesPage.qml"))
         }
     }
     LoginPage {
@@ -93,5 +101,14 @@ MainView {
     function afterAccessGranted() {
         QDropbox.requestAccountInfo();
         QDropbox.requestMetadata("/dropbox/");
+    }
+
+    Connections {
+        target: ContentHub
+        onExportRequested: {
+            // show content picker
+            console.log("export requested");
+            contentTransfer = transfer
+        }
     }
 }
