@@ -26,4 +26,5 @@ Page {
 //            }
         }
     }
+	flickable: webView
 }
