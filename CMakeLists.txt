@@ -3,6 +3,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(SRC
     src/main.cpp
     src/downloadfile.cpp
+    src/path.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

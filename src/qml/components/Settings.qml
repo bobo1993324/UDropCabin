@@ -38,6 +38,11 @@ Item {
         settingsDoc["tokenSecret"] = tokenSecret;
         aDocument.contents = settingsDoc;
     }
+    function logout() {
+        token = ""
+        tokenSecret = ""
+        save();
+    }
 
     Component.onCompleted: {
         settings.load()

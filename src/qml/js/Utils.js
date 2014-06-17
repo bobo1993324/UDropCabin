@@ -5,3 +5,8 @@ function getParentPath(path) {
     else
         return returnVal;
 }
+
+function getFileNameFromPath(path) {
+    var i = path.lastIndexOf("/");
+    return path.substring(i + 1, path.length);
+}

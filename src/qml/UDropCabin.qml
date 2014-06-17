@@ -21,13 +21,18 @@ MainView {
      when the device is rotated. The default is false.
     */
     //automaticOrientation: true
+//    useDeprecatedToolbar: false
 
-    width: units.gu(100)
+    backgroundColor: "#5FBCD3"
+    headerColor: "#00A9D3"
+
+    width: units.gu(50)
     height: units.gu(75)
     property var accountInfo: ({})
     property var fileMetaInfo: ({})
     property var contentTransfer;
     property list<ContentItem> transferItemList
+    property bool busy: false
     Component {
         id: transferComponent
         ContentItem {}
@@ -36,6 +41,7 @@ MainView {
     Settings {
         id: settings
         onLoadFinished: {
+            busy = true;
             QDropbox.key = "o28bortadg3cjbt";
             QDropbox.sharedSecret = "wqm8zgaxvtrehbh";
             if (settings.token !== "") {
@@ -56,24 +62,28 @@ MainView {
             pageStack.push(Qt.resolvedUrl("./ui/FilesPage.qml"))
         }
     }
-    LoginPage {
-        id: loginPage
-        visible: false
-        onAccessGranted: {
-            console.log("access granted")
-            //request access
-            timer.start()
-            pageStack.pop();
-//            afterAccessGranted();
-        }
+
+    function accessGranted() {
+        console.log("access granted")
+        //request access
+        accessTimer.start()
+        pageStack.pop();
     }
 
     Timer {
-        id: timer
+        id: accessTimer
         interval: 1000
         repeat: false
         onTriggered: {
             QDropbox.requestAccessToken();
+        }
+    }
+    Timer {
+        id: loginTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            pageStack.push(Qt.resolvedUrl("./ui/LoginPage.qml"), {url: QDropbox.authorizeLink});
         }
     }
 
@@ -92,8 +102,7 @@ MainView {
         }
         onTokenExpired: {
             console.log("token expired");
-            loginPage.url = QDropbox.authorizeLink;
-            pageStack.push(loginPage);
+            loginTimer.start()
         }
         onAccountInfoReceived: {
             console.log("Receive account info");
@@ -102,8 +111,11 @@ MainView {
         }
         onMetadataReceived: {
             console.log("file meta recieved")
-            fileMetaInfo = eval(metadataJson);
+            if (pageStack.depth == 1) {
+                fileMetaInfo = eval(metadataJson);
+            }
             console.log(JSON.stringify(metadataJson))
+            busy = false;
         }
     }
 

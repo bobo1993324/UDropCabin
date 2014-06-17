@@ -30,5 +30,16 @@ Page {
                 text: mainView.accountInfo.quota_info.normal + " / " + mainView.accountInfo.quota_info.quota
             }
         }
+        ListItem.SingleControl {
+            control: Button {
+                text: "Logout"
+                onClicked: {
+                    settings.logout();
+                    QDropbox.token = "";
+                    QDropbox.tokenSecret = "";
+                    settings.loadFinished();
+                }
+            }
+        }
     }
 }

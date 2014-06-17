@@ -6,25 +6,15 @@ Page {
     id: loginPage
     title: "Login"
     property alias url: webView.url
-    signal accessGranted()
     WebView {
         id: webView
         width: parent.width
         height: parent.height
-//        url: "https://www.dropbox.com/1/oauth2/authorize?response_type=token&client_id=o28bortadg3cjbt&redirect_uri=http://localhost"
         onUrlChanged: {
             console.log(url);
             if (url.toString().indexOf("authorize_submit") >= 0) {
-                accessGranted();
+                mainView.accessGranted();
             }
-
-//            console.log(JSON.stringify(Utils.queryTokenUrl(url.toString())));
-//            var returnVal = Utils.queryTokenUrl(url.toString());
-//            if (returnVal.hasOwnProperty("access_token")) {
-//                settings.accessToken = returnVal.access_token;
-//                console.log("setAccessToken to " + settings.accessToken)
-//                pageStack.pop();
-//            }
         }
     }
 }
