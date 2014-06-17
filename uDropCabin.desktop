@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=uDropCabin
 Exec=./udropcabin
-Icon=./UDropCabin.png
+Icon=./logo.png
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
