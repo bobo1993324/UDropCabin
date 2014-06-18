@@ -56,5 +56,15 @@ Page {
                 }
             }
         }
+
+        ToolbarButton {
+            action: Action {
+                text: "About"
+                iconSource: "image://theme/help"
+                onTriggered: {
+                    pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                }
+            }
+        }
     }
 }
