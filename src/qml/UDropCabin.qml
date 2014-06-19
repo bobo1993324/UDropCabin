@@ -33,6 +33,7 @@ MainView {
     property var contentTransfer;
     property list<ContentItem> transferItemList
     property bool busy: false
+    property bool isOnline: true
     Component {
         id: transferComponent
         ContentItem {}
@@ -54,6 +55,10 @@ MainView {
                 QDropbox.requestToken();
             }
         }
+    }
+
+    MetaDb {
+        id:metaDb
     }
 
     PageStack {
@@ -111,17 +116,27 @@ MainView {
         }
         onMetadataReceived: {
             console.log("file meta recieved")
+            mainView.isOnline = true;
             if (pageStack.depth == 1) {
                 fileMetaInfo = eval(metadataJson);
+                metaDb.set(fileMetaInfo.path, fileMetaInfo)
             }
             console.log(JSON.stringify(metadataJson))
             busy = false;
+        }
+        onErrorOccured: {
+            console.log("Error " + errorcode)
+            if (errorcode == 1) {
+                console.log("communication error")
+                mainView.isOnline = false;
+                busy = false
+            }
         }
     }
 
     function afterAccessGranted() {
         QDropbox.requestAccountInfo();
-        QDropbox.requestMetadata("/dropbox/");
+        listDir("/");
     }
 
     Connections {
@@ -131,5 +146,17 @@ MainView {
             console.log("export requested");
             contentTransfer = transfer
         }
+    }
+
+    function listDir(path) {
+        console.log(path)
+        var newDir = metaDb.get(path);
+        if (newDir !== undefined)
+            fileMetaInfo = metaDb.get(path)
+        else {
+            busy = true
+        }
+
+        QDropbox.requestMetadata("/dropbox/" + path);
     }
 }

@@ -11,14 +11,25 @@ Page {
         model: mainView.fileMetaInfo.contents
         header: ListItem.Header {
             text: mainView.fileMetaInfo.path
+            Label {
+                color: "red"
+                text: "No network"
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                    rightMargin: units.gu(2)
+                }
+                visible: !mainView.isOnline
+            }
         }
 
         delegate: ListItem.Standard {
             text: Utils.getFileNameFromPath(modelData.path)
             progression: modelData.is_dir
             onClicked: {
-                if (modelData.is_dir)
-                    QDropbox.requestMetadata("/dropbox"+ modelData.path);
+                if (modelData.is_dir) {
+                    mainView.listDir(modelData.path);
+                }
                 else
                     pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: modelData})
 
@@ -42,7 +53,7 @@ Page {
                 iconSource: "image://theme/keyboard-caps"
                 onTriggered: {
                     console.log(mainView.fileMetaInfo.path !== "/")
-                    QDropbox.requestMetadata("/dropbox/" + Utils.getParentPath(mainView.fileMetaInfo.path))
+                    mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
                 }
             }
         }

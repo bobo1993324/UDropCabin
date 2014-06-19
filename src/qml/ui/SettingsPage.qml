@@ -38,6 +38,7 @@ Page {
                     QDropbox.token = "";
                     QDropbox.tokenSecret = "";
                     settings.loadFinished();
+                    metaDb.clear();
                 }
             }
         }
