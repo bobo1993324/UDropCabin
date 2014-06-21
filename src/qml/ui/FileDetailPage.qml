@@ -76,17 +76,17 @@ Page {
                     visible: downloadRow.state == "downloading"
                     running: visible
                 }
-                Button {
-                    id: openButton
-                    text: "Open"
-                    visible: downloadRow.state == "cached"
-                    onClicked: {
-                        console.log("open");
-                        Qt.openUrlExternally(systemPath);
-                    }
-                }
+//                Button {
+//                    id: openButton
+//                    text: "Open"
+//                    visible: downloadRow.state == "cached"
+//                    onClicked: {
+//                        console.log("open");
+//                        Qt.openUrlExternally(systemPath);
+//                    }
+//                }
                 Label {
-                    id: openButton
+                    id: donwloadedLabel
                     text: "Downloaded"
                     visible: downloadRow.state == "cached"
                 }
