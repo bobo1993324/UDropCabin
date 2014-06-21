@@ -51,6 +51,7 @@ Page {
         }
 
         ListItem.Standard {
+            visible: mainView.contentTransfer === undefined
             control: Row {
                 id : downloadRow
                 state: "notCached"
@@ -75,15 +76,15 @@ Page {
                     visible: downloadRow.state == "downloading"
                     running: visible
                 }
-//                Button {
-//                    id: openButton
-//                    text: "Open"
-//                    visible: downloadRow.state == "cached"
-//                    onClicked: {
-//                        console.log("open");
-//                        Qt.openUrlExternally(systemPath);
-//                    }
-//                }
+                Button {
+                    id: openButton
+                    text: "Open"
+                    visible: downloadRow.state == "cached"
+                    onClicked: {
+                        console.log("open");
+                        Qt.openUrlExternally(systemPath);
+                    }
+                }
                 Label {
                     id: openButton
                     text: "Downloaded"
@@ -94,12 +95,12 @@ Page {
         ListItem.Standard {
             visible: mainView.contentTransfer !== undefined
             control: Button {
-                text: "Transfer"
+                text: "Open"
                 onClicked: {
-                    console.log(systemPath)
-                    mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
-                    mainView.contentTransfer.items = mainView.transferItemList;
-                    mainView.contentTransfer.state = ContentTransfer.Charged;
+                    if (downloadRow.state == "cached")
+                        transferContent()
+                    else
+                        DownloadFile.download(file.path)
                 }
             }
         }
@@ -108,6 +109,15 @@ Page {
         target: DownloadFile
         onDownloadFinished: {
             downloadRow.state = "cached"
+            if (mainView.contentTransfer !== undefined) {
+                transferContent();
+            }
         }
+    }
+    function transferContent() {
+        mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
+        mainView.contentTransfer.items = mainView.transferItemList;
+        mainView.contentTransfer.state = ContentTransfer.Charged;
+        Qt.quit()
     }
 }
