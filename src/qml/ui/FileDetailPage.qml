@@ -76,15 +76,15 @@ Page {
                     visible: downloadRow.state == "downloading"
                     running: visible
                 }
-//                Button {
-//                    id: openButton
-//                    text: "Open"
-//                    visible: downloadRow.state == "cached"
-//                    onClicked: {
-//                        console.log("open");
-//                        Qt.openUrlExternally(systemPath);
-//                    }
-//                }
+                //                Button {
+                //                    id: openButton
+                //                    text: "Open"
+                //                    visible: downloadRow.state == "cached"
+                //                    onClicked: {
+                //                        console.log("open");
+                //                        Qt.openUrlExternally(systemPath);
+                //                    }
+                //                }
                 Label {
                     id: donwloadedLabel
                     text: "Downloaded"
@@ -94,13 +94,21 @@ Page {
         }
         ListItem.Standard {
             visible: mainView.contentTransfer !== undefined
-            control: Button {
-                text: "Open"
-                onClicked: {
-                    if (downloadRow.state == "cached")
-                        transferContent()
-                    else
-                        DownloadFile.download(file.path)
+            control: Row {
+                Button {
+                    text: "Open"
+                    onClicked: {
+                        if (downloadRow.state == "cached")
+                            transferContent()
+                        else {
+                            downloadRow.state == "downloading"
+                            DownloadFile.download(file.path)
+                        }
+                    }
+                    ActivityIndicator {
+                        visible: downloadRow.state == "downloading"
+                        running: visible
+                    }
                 }
             }
         }
