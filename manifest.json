@@ -2,7 +2,7 @@
     "name": "com.ubuntu.developer.bobo1993324.udropcabin",
     "description": "description of uDropCabin",
     "framework": "ubuntu-sdk-14.04-qml-dev1",
-    "architecture": "all",
+    "architecture": "armhf",
     "title": "uDropCabin",
     "hooks": {
         "uDropCabin": {
