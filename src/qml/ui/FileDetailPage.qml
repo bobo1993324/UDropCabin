@@ -40,7 +40,7 @@ Page {
         ListItem.Standard {
             text: "Modified"
             control: Label {
-                text: file.modified
+                text: Qt.formatDateTime(DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000"), "MMMM d yyyy hh:mm:ss")
             }
         }
         ListItem.Standard {
@@ -54,9 +54,11 @@ Page {
             control: Row {
                 id : downloadRow
                 state: "notCached"
+                spacing: units.gu(1)
                 Component.onCompleted: {
                     if (DownloadFile.fileExists(file.path)) {
-                        state = "cached"
+                        if (DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000"))
+                            state = "cached"
                     }
                 }
 
@@ -73,14 +75,19 @@ Page {
                     visible: downloadRow.state == "downloading"
                     running: visible
                 }
-                Button {
+//                Button {
+//                    id: openButton
+//                    text: "Open"
+//                    visible: downloadRow.state == "cached"
+//                    onClicked: {
+//                        console.log("open");
+//                        Qt.openUrlExternally(systemPath);
+//                    }
+//                }
+                Label {
                     id: openButton
-                    text: "Open"
+                    text: "Downloaded"
                     visible: downloadRow.state == "cached"
-                    onClicked: {
-                        console.log("open");
-                        Qt.openUrlExternally(systemPath);
-                    }
                 }
             }
         }

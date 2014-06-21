@@ -23,3 +23,14 @@ void DownloadFile::download(QString path) {
     file.close();
     emit downloadFinished();
 }
+
+QDateTime DownloadFile::getModify(QString dropboxPath) {
+    QFileInfo qfi(QDir::homePath() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/"+ dropboxPath);
+    return qfi.lastModified();
+}
+
+QDateTime DownloadFile::getDateTimeUTC(QString dateTime, QString format) {
+    QDateTime qdt = QDateTime::fromString(dateTime, format);
+    qdt.setTimeSpec(Qt::UTC);
+    return qdt;
+}
