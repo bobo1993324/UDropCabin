@@ -21,7 +21,7 @@ Page {
         Label {
             width: parent.width
             wrapMode: Text.Wrap
-            text: "This is an UNOFFICIAL dropbox app. You can list files, download them locally, and later open them in other applications.\n\nThanks to QtDropbox(http://lycis.github.io/QtDropbox/) which provides api the app calls.\n\nAuthor: Boren Zhang <bobo1993324@gmail.com>\n\nSource code & report issue @ https://github.com/bobo1993324/UDropCasbin"
+            text: "This is an UNOFFICIAL dropbox app. You can list files, download them locally, and later open them in other applications.\n\nThanks to QtDropbox(http://lycis.github.io/QtDropbox/) which provides api the app calls.\n\nAuthor: Boren Zhang <bobo1993324@gmail.com>\n\nSource code & report issue @ https://github.com/bobo1993324/UDropCabin"
         }
     }
 }
