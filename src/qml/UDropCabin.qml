@@ -43,8 +43,8 @@ MainView {
         id: settings
         onLoadFinished: {
             busy = true;
-            QDropbox.key = "o28bortadg3cjbt";
-            QDropbox.sharedSecret = "wqm8zgaxvtrehbh";
+            QDropbox.key = "2n3x34hh0g822al";
+            QDropbox.sharedSecret = "3lb111pil5xfgjq";
             if (settings.token !== "") {
                 console.log("Load token")
                 QDropbox.token = settings.token
