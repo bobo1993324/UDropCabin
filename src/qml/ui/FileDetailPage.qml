@@ -2,7 +2,9 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Content 0.1
+import Ubuntu.Components.Popups 1.0
 import "../js/Utils.js" as Utils
+import "../components"
 Page {
     title: "Property"
     property var file
@@ -76,15 +78,14 @@ Page {
                     visible: downloadRow.state == "downloading"
                     running: visible
                 }
-                //                Button {
-                //                    id: openButton
-                //                    text: "Open"
-                //                    visible: downloadRow.state == "cached"
-                //                    onClicked: {
-                //                        console.log("open");
-                //                        Qt.openUrlExternally(systemPath);
-                //                    }
-                //                }
+                Button {
+                    id: openButton
+                    text: "Open"
+                    visible: downloadRow.state == "cached"
+                    onClicked: {
+                        PopupUtils.open(contentPicker)
+                    }
+                }
                 Label {
                     id: donwloadedLabel
                     text: "Downloaded"
@@ -127,5 +128,8 @@ Page {
         mainView.contentTransfer.items = mainView.transferItemList;
         mainView.contentTransfer.state = ContentTransfer.Charged;
         Qt.quit()
+    }
+    ContentPickerDialog {
+        id: contentPicker
     }
 }
