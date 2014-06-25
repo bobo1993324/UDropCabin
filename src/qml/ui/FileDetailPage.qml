@@ -6,6 +6,7 @@ import Ubuntu.Components.Popups 1.0
 import "../js/Utils.js" as Utils
 import "../components"
 Page {
+	id: fileDetailPage
     title: "Property"
     property var file
     property string systemPath: "file://" + PATH.homeDir() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + file.path

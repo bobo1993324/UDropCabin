@@ -57,11 +57,12 @@ Component {
         Connections {
             id: stateChangeConnection
             onStateChanged: {
-                console.log("Transfer state is " + picker.activeTransfer.state)
-                if (picker.activeTransfer.state === ContentTransfer.Charged) {
-                    files.importFiles(String(picker.activeTransfer.items[0].url).replace("file://", ""))
+                console.log("Transfer state is " + picker.activeTransfer.state + " " + ContentTransfer.InProgress)
+				if (picker.activeTransfer.state === ContentTransfer.InProgress) {
+                  	picker.activeTransfer.items = [transferComponent.createObject(mainView, {"url": fileDetailPage.systemPath}) ]
+        			picker.activeTransfer.state = ContentTransfer.Charged;
                 	closeTimer.start()
-                }
+       			} 
             }
         }
         Timer {
