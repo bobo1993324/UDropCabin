@@ -54,7 +54,6 @@ Page {
         }
 
         ListItem.Standard {
-            visible: mainView.contentTransfer === undefined
             control: Row {
                 id : downloadRow
                 spacing: units.gu(1)
