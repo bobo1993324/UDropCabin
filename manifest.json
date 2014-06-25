@@ -1,6 +1,6 @@
 {
     "name": "com.ubuntu.developer.bobo1993324.udropcabin",
-    "description": "description of uDropCabin",
+    "description": "UDropCabin is an unOfficial Dropbox app. It can access Dropbox files and transfer them to other apps",
     "framework": "ubuntu-sdk-14.04-qml-dev1",
     "architecture": "armhf",
     "title": "uDropCabin",
@@ -12,5 +12,5 @@
         }
     },
     "version": "0.1",
-    "maintainer": ""
+    "maintainer": "Boren Zhang <bobo1993324@gmail.com>"
 }
