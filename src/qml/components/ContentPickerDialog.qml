@@ -23,7 +23,7 @@ import Ubuntu.Components.Popups 0.1 as Popups
 import Ubuntu.Content 0.1
 
 Component {
-    Popups.PopupBase {
+    Popups.PopupBase  {
         id: picker
         property var activeTransfer
         property var selectedItems

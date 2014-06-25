@@ -6,7 +6,7 @@ import Ubuntu.Components.Popups 1.0
 import "../js/Utils.js" as Utils
 import "../components"
 Page {
-	id: fileDetailPage
+    id: fileDetailPage
     title: "Property"
     property var file
     property string systemPath: "file://" + PATH.homeDir() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + file.path
@@ -57,59 +57,23 @@ Page {
             visible: mainView.contentTransfer === undefined
             control: Row {
                 id : downloadRow
-                state: "notCached"
                 spacing: units.gu(1)
-                Component.onCompleted: {
-                    if (DownloadFile.fileExists(file.path)) {
-                        if (DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000"))
-                            state = "cached"
-                    }
-                }
-
-                Button {
-                    id: downloadButton
-                    visible: downloadRow.state == "notCached"
-                    text: "Download"
-                    onClicked: {
-                        downloadRow.state = "downloading"
-                        DownloadFile.download(file.path);
-                    }
-                }
                 ActivityIndicator {
-                    visible: downloadRow.state == "downloading"
-                    running: visible
+                    id: downloadAI
+                    visible: running
+                    running: false
                 }
                 Button {
                     id: openButton
                     text: "Open"
-                    visible: downloadRow.state == "cached"
                     onClicked: {
-                        PopupUtils.open(contentPicker)
-                    }
-                }
-                Label {
-                    id: donwloadedLabel
-                    text: "Downloaded"
-                    visible: downloadRow.state == "cached"
-                }
-            }
-        }
-        ListItem.Standard {
-            visible: mainView.contentTransfer !== undefined
-            control: Row {
-                Button {
-                    text: "Open"
-                    onClicked: {
-                        if (downloadRow.state == "cached")
-                            transferContent()
-                        else {
-                            downloadRow.state == "downloading"
-                            DownloadFile.download(file.path)
+                        if (DownloadFile.fileExists(file.path) &&
+                                DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000")){
+                            transferContent();
+                        } else {
+                            downloadAI.running = true;
+                            DownloadFile.download(file.path);
                         }
-                    }
-                    ActivityIndicator {
-                        visible: downloadRow.state == "downloading"
-                        running: visible
                     }
                 }
             }
@@ -118,17 +82,19 @@ Page {
     Connections {
         target: DownloadFile
         onDownloadFinished: {
-            downloadRow.state = "cached"
-            if (mainView.contentTransfer !== undefined) {
-                transferContent();
-            }
+            downloadAI.running = false;
+            transferContent();
         }
     }
     function transferContent() {
-        mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
-        mainView.contentTransfer.items = mainView.transferItemList;
-        mainView.contentTransfer.state = ContentTransfer.Charged;
-        Qt.quit()
+        if (mainView.contentTransfer === undefined) {
+            PopupUtils.open(contentPicker)
+        } else {
+            mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
+            mainView.contentTransfer.items = mainView.transferItemList;
+            mainView.contentTransfer.state = ContentTransfer.Charged;
+            Qt.quit()
+        }
     }
     ContentPickerDialog {
         id: contentPicker
