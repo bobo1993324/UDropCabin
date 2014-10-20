@@ -171,4 +171,8 @@ MainView {
             }
         }
     }
+
+    function refreshDir() {
+        listDir(fileMetaInfo.path)
+    }
 }

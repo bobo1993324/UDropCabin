@@ -21,11 +21,26 @@ Page {
                 text: "Upload"
                 iconName: "add"
                 onTriggered: {
-                    PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
+                    var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
                                    filesPage,
                                    {
                                        isUpload: true
                                    });
+                    contentDialog.transferCompleteForUpload.connect(
+                        function(files) {
+                            for (var i in files) {
+                                var sourcePath = files[i].url.toString().replace("file://", "");
+                                mainView.busy = true;
+                                UploadFile.upload(sourcePath,
+                                    mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
+                                mainView.busy = false;
+                            }
+                            mainView.refreshDir();
+                        });
+
+                    UploadFile.upload("/home/boren/examples.desktop",
+                                      mainView.fileMetaInfo.path + "/example.desktop")
+                    mainView.refreshDir();
                 }
             },
             Action {
