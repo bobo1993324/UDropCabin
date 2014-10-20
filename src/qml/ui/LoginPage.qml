@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import Ubuntu.Components 0.1
-import QtWebKit 3.0
+import QtQuick 2.2
+import Ubuntu.Components 1.1
+import Ubuntu.Web 0.2
 import "../js/Utils.js" as Utils
 Page {
     id: loginPage

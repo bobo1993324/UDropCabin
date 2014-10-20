@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 import Ubuntu.Content 0.1
 import "components"
 import "ui"
@@ -21,7 +21,7 @@ MainView {
      when the device is rotated. The default is false.
     */
     //automaticOrientation: true
-//    useDeprecatedToolbar: false
+    useDeprecatedToolbar: false
 
     backgroundColor: "#5FBCD3"
     headerColor: "#00A9D3"
@@ -118,10 +118,19 @@ MainView {
             console.log("file meta recieved")
             mainView.isOnline = true;
             if (pageStack.depth == 1) {
-                fileMetaInfo = eval(metadataJson);
+                var tmpFileMetaInfo = eval(metadataJson);
+                //sort files, display directroy first
+                tmpFileMetaInfo.contents.sort(function(a, b) {
+                    if (a.is_dir && !b.is_dir) {
+                        return -1;
+                    } else if (!a.is_dir && b.is_dir) {
+                        return 1;
+                    }
+                    return 0;
+                });
+                mainView.fileMetaInfo = tmpFileMetaInfo;
                 metaDb.set(fileMetaInfo.path, fileMetaInfo)
             }
-            console.log(JSON.stringify(metadataJson))
             busy = false;
         }
         onErrorOccured: {
@@ -149,14 +158,17 @@ MainView {
     }
 
     function listDir(path) {
-        console.log(path)
-        var newDir = metaDb.get(path);
-        if (newDir !== undefined)
-            fileMetaInfo = metaDb.get(path)
-        else {
+        console.log("listDir " + path)
+        if (mainView.isOnline) {
             busy = true
+            QDropbox.requestMetadata("/dropbox/" + path);
+        } else {
+            var newDir = metaDb.get(path);
+            if (newDir !== undefined)
+                fileMetaInfo = newDir
+            else {
+                console.log("Error: not online, no cache for the directory")
+            }
         }
-
-        QDropbox.requestMetadata("/dropbox/" + path);
     }
 }

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.2
 import U1db 1.0 as U1db
 
 Item {
