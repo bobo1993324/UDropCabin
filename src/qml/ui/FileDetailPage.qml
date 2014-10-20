@@ -87,15 +87,12 @@ Page {
     }
     function transferContent() {
         if (mainView.contentTransfer === undefined) {
-            PopupUtils.open(contentPicker)
+            PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"))
         } else {
             mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
             mainView.contentTransfer.items = mainView.transferItemList;
             mainView.contentTransfer.state = ContentTransfer.Charged;
             Qt.quit()
         }
-    }
-    ContentPickerDialog {
-        id: contentPicker
     }
 }

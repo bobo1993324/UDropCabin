@@ -17,6 +17,14 @@ void DownloadFile::download(QString path) {
     currentFile->open(QFile::ReadOnly);
     QByteArray content = currentFile->readAll();
     currentFile->close();
+
+    //create parent directory
+    QFileInfo fileInfo(basePath + path);
+    QDir parentDir = fileInfo.dir();
+    if (!parentDir.exists()) {
+        parentDir.mkpath(parentDir.path());
+    }
+
     QFile file(basePath + path);
     file.open(QFile::WriteOnly);
     file.write(content.data(), content.length());

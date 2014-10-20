@@ -1,13 +1,15 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components.Popups 1.0
 import "../js/Utils.js" as Utils
 Page {
+    id: filesPage
     title: "UDropCabin"
     head {
         backAction: Action {
             text: "Up"
-            iconSource: "image://theme/keyboard-caps"
+            iconName: "back"
             enabled: mainView.fileMetaInfo.path !== "/"
             onTriggered: {
                 console.log(mainView.fileMetaInfo.path !== "/")
@@ -16,8 +18,19 @@ Page {
         }
         actions: [
             Action {
+                text: "Upload"
+                iconName: "add"
+                onTriggered: {
+                    PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
+                                   filesPage,
+                                   {
+                                       isUpload: true
+                                   });
+                }
+            },
+            Action {
                 text: "Settings"
-                iconSource: "image://theme/navigation-menu"
+                iconName: "settings"
                 onTriggered: {
                     pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
                 }
@@ -28,6 +41,7 @@ Page {
                     pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
                 }
             }
+
         ]
         contents: Item {
             height: parent.height
