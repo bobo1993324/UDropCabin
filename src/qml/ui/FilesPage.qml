@@ -12,8 +12,8 @@ Page {
             iconName: "back"
             enabled: mainView.fileMetaInfo.path !== "/"
             onTriggered: {
-                console.log(mainView.fileMetaInfo.path !== "/")
                 mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
+                dirView.reset()
             }
         }
         actions: [
@@ -80,22 +80,136 @@ Page {
 
     ListView {
         id: dirView
-        anchors.fill: parent
+        property int positionIndex
+        property var selectedIndexes: {[]}
+        signal selectedCountChanged
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            bottomMargin: fileOpsPanel.height - fileOpsPanel.position
+        }
+
         model: mainView.fileMetaInfo.contents
+        clip: true
+
+        function reset() {
+            dirView.selectedIndexes = [];
+            dirView.selectedCountChanged();
+        }
 
         delegate: ListItem.Standard {
+            property bool selected;
             text: Utils.getFileNameFromPath(modelData.path)
             progression: modelData.is_dir
+            Component.onCompleted: selected = dirView.selectedIndexes.indexOf(index) > -1
             onClicked: {
                 if (modelData.is_dir) {
                     mainView.listDir(modelData.path);
+                    reset();
+                    fileOpsPanel.close();
                 }
-                else
-                    pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: modelData})
+                else {
+                    if (!selected) {
+                        dirView.selectedIndexes.push(index)
+                        selected = true;
+                        dirView.positionIndex = index
+                    } else {
+                        dirView.selectedIndexes.pop(index)
+                        selected = false;
+                    }
+                    dirView.selectedCountChanged();
+                }
 
             }
             iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
             iconFrame: false
+            Rectangle {
+                visible: selected
+                anchors.fill: parent
+                color: "#1382DE";
+                z: -1
+            }
+        }
+        Timer {
+            id: positionTimer
+            property int positionIndex
+            interval: 1000
+            repeat: false
+            onTriggered: {
+
+            }
+        }
+    }
+    Panel {
+        id: fileOpsPanel
+        property bool singleFileOps: true;
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
+        height: units.gu(8)
+        locked: true
+        onAnimatingChanged: {
+            if (!animating && opened) {
+                dirView.positionViewAtIndex(dirView.positionIndex, ListView.Visible);
+            }
+        }
+        Rectangle {
+            height: parent.height
+            width: parent.width
+            anchors.right: parent.right
+            Row {
+                height: parent.height
+                anchors.right: parent.right
+                anchors.rightMargin: units.gu(2)
+                spacing: units.gu(2)
+                ToolbarButton {
+                    iconName: "share"
+                    text: "Open"
+                    visible: fileOpsPanel.singleFileOps
+                    onTriggered: {
+                        var file = mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]];
+                        if (DownloadFile.fileExists(file.path) &&
+                                DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000")){
+                            mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
+                        } else {
+                            downloadAI.running = true;
+                            DownloadFile.download(file.path);
+                            downloadAI.running = false;
+                            mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
+                        }
+                    }
+                }
+                ToolbarButton {
+                    iconName: "delete"
+                    text: "Delete"
+                    onTriggered: {
+
+                    }
+                }
+                ToolbarButton {
+                    visible: fileOpsPanel.singleFileOps
+                    iconName: "info"
+                    text: "Property"
+                    onTriggered: {
+                        pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
+                    }
+                }
+            }
+        }
+        Connections {
+            target: dirView
+            onSelectedCountChanged: {
+                fileOpsPanel.singleFileOps = (dirView.selectedIndexes.length == 1)
+                if (dirView.selectedIndexes.length == 0) {
+                    fileOpsPanel.close();
+                } else {
+                    fileOpsPanel.open();
+                }
+            }
         }
     }
 
@@ -104,5 +218,11 @@ Page {
         anchors.centerIn: parent
         visible: running
         running: mainView.busy
+    }
+    ActivityIndicator {
+        id: downloadAI
+        anchors.centerIn: parent
+        visible: running
+        running: false
     }
 }

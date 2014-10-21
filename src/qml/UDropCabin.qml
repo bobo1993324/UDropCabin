@@ -1,6 +1,7 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Content 0.1
+import Ubuntu.Components.Popups 1.0
 import "components"
 import "ui"
 
@@ -34,6 +35,18 @@ MainView {
     property list<ContentItem> transferItemList
     property bool busy: false
     property bool isOnline: true
+
+    function sendContentToOtherApps(path) {
+        if (mainView.contentTransfer === undefined) {
+            PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"))
+        } else {
+            mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path}) ]
+            mainView.contentTransfer.items = mainView.transferItemList;
+            mainView.contentTransfer.state = ContentTransfer.Charged;
+            Qt.quit()
+        }
+    }
+
     Component {
         id: transferComponent
         ContentItem {}

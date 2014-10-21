@@ -10,3 +10,7 @@ function getFileNameFromPath(path) {
     var i = path.lastIndexOf("/");
     return path.substring(i + 1, path.length);
 }
+
+function dropboxPathToLocalPath(dropboxPath) {
+    return "file://" + PATH.homeDir() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + dropboxPath;
+}

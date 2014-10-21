@@ -9,7 +9,6 @@ Page {
     id: fileDetailPage
     title: "Property"
     property var file
-    property string systemPath: "file://" + PATH.homeDir() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + file.path
     Column {
         anchors.horizontalCenter: parent.horizontalCenter
         width: Math.min(parent.width, units.gu(50))
@@ -51,48 +50,6 @@ Page {
             control: Label {
                 text: file.mime_type
             }
-        }
-
-        ListItem.Standard {
-            control: Row {
-                id : downloadRow
-                spacing: units.gu(1)
-                ActivityIndicator {
-                    id: downloadAI
-                    visible: running
-                    running: false
-                }
-                Button {
-                    id: openButton
-                    text: "Open"
-                    onClicked: {
-                        if (DownloadFile.fileExists(file.path) &&
-                                DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000")){
-                            transferContent();
-                        } else {
-                            downloadAI.running = true;
-                            DownloadFile.download(file.path);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    Connections {
-        target: DownloadFile
-        onDownloadFinished: {
-            downloadAI.running = false;
-            transferContent();
-        }
-    }
-    function transferContent() {
-        if (mainView.contentTransfer === undefined) {
-            PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"))
-        } else {
-            mainView.transferItemList = [transferComponent.createObject(mainView, {"url": systemPath}) ]
-            mainView.contentTransfer.items = mainView.transferItemList;
-            mainView.contentTransfer.state = ContentTransfer.Charged;
-            Qt.quit()
         }
     }
 }
