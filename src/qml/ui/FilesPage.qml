@@ -3,200 +3,89 @@ import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 import Ubuntu.Components.Popups 1.0
 import "../js/Utils.js" as Utils
+import "../components"
 Page {
     id: filesPage
     title: "UDropCabin"
-    head {
-        backAction: Action {
-            text: "Up"
-            iconName: "back"
-            enabled: mainView.fileMetaInfo.path !== "/"
-            onTriggered: {
-                mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
-                dirView.reset()
-            }
-        }
-        actions: [
-            Action {
-                text: "Upload"
-                iconName: "add"
-                onTriggered: {
-                    var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
-                                   filesPage,
-                                   {
-                                       isUpload: true
-                                   });
-                    contentDialog.transferCompleteForUpload.connect(
-                        function(files) {
-                            for (var i in files) {
-                                var sourcePath = files[i].url.toString().replace("file://", "");
-                                mainView.busy = true;
-                                UploadFile.upload(sourcePath,
-                                    mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
-                                mainView.busy = false;
-                            }
-                            mainView.refreshDir();
-                        });
+    property bool editMode: false;
+    state: editMode ? "edit" : "navigate"
+    states: [
+        PageHeadState {
+           name: "navigate"
+           head: filesPage.head
+           backAction: Action {
+               text: "Up"
+               iconName: "back"
+               enabled: mainView.fileMetaInfo.path !== "/"
+               onTriggered: {
+                   mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
+                   dirView.reset()
+               }
+           }
+           actions: [
+               Action {
+                   text: "Upload"
+                   iconName: "add"
+                   onTriggered: {
+                       var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
+                                      filesPage,
+                                      {
+                                          isUpload: true
+                                      });
+                       contentDialog.transferCompleteForUpload.connect(
+                           function(files) {
+                               for (var i in files) {
+                                   var sourcePath = files[i].url.toString().replace("file://", "");
+                                   mainView.busy = true;
+                                   UploadFile.upload(sourcePath,
+                                       mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
+                                   mainView.busy = false;
+                               }
+                               mainView.refreshDir();
+                           });
 
-                    UploadFile.upload("/home/boren/examples.desktop",
-                                      mainView.fileMetaInfo.path + "/example.desktop")
-                    mainView.refreshDir();
-                }
-            },
-            Action {
-                text: "Refresh"
-                iconName: "reload"
-                onTriggered: mainView.refreshDir();
-            },
-            Action {
-                text: "Settings"
-                iconName: "settings"
-                onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-                }
-            }, Action {
-                text: "About"
-                iconSource: "image://theme/help"
-                onTriggered: {
-                    pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-                }
-            }
+                       UploadFile.upload("/home/boren/examples.desktop",
+                                         mainView.fileMetaInfo.path + "/example.desktop")
+                       mainView.refreshDir();
+                   }
+               },
+               Action {
+                   text: "Edit"
+                   iconName: "edit"
+                   onTriggered: {
+                       filesPage.editMode = true;
+                   }
+               },
+               Action {
+                   text: "Refresh"
+                   iconName: "reload"
+                   onTriggered: mainView.refreshDir();
+               },
+               Action {
+                   text: "Settings"
+                   iconName: "settings"
+                   onTriggered: {
+                       pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+                   }
+               }, Action {
+                   text: "About"
+                   iconSource: "image://theme/help"
+                   onTriggered: {
+                       pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                   }
+               }
 
-        ]
-        contents: Item {
-            height: parent.height
-            width: parent.width
-            Label {
-                text: mainView.fileMetaInfo.path != undefined? mainView.fileMetaInfo.path : ""
-                anchors.verticalCenter: parent.verticalCenter
-            }
-            Label {
-                color: "red"
-                text: "No network"
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                    rightMargin: units.gu(2)
-                }
-                visible: !mainView.isOnline
-            }
-        }
-    }
-
-    ListView {
-        id: dirView
-        property int positionIndex
-        property var selectedIndexes: {[]}
-        signal selectedCountChanged
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            bottomMargin: fileOpsPanel.height - fileOpsPanel.position
-        }
-
-        model: mainView.fileMetaInfo.contents
-        clip: true
-
-        function reset() {
-            dirView.selectedIndexes = [];
-            dirView.selectedCountChanged();
-        }
-
-        delegate: ListItem.Standard {
-            property bool selected;
-            text: Utils.getFileNameFromPath(modelData.path)
-            Component.onCompleted: selected = dirView.selectedIndexes.indexOf(index) > -1
-            onClicked: {
-                if (!selected) {
-                    dirView.selectedIndexes.push(index)
-                    selected = true;
-                    dirView.positionIndex = index
-                } else {
-                    for (var i in dirView.selectedIndexes) {
-                        if (dirView.selectedIndexes[i] === index) {
-                            dirView.selectedIndexes.splice(i, 1);
-                            break;
-                        }
-                    }
-                    console.log(dirView.selectedIndexes);
-                    selected = false;
-                }
-                dirView.selectedCountChanged();
-            }
-            Item {
-                height: parent.height
-                width: units.gu(10)
-                anchors.right: parent.right
-                visible: modelData.is_dir
-                Icon {
-                    name: 'next'
-                    width: units.gu(3)
-                    height: width
-                    anchors {
-                        centerIn: parent
-                    }
-                }
-                MouseArea {
-                    enabled: modelData.is_dir
-                    preventStealing: true
-                    anchors.fill: parent
-                    onClicked: {
-                        mainView.listDir(modelData.path);
-                        dirView.reset();
-                        fileOpsPanel.close();
-                    }
-                }
-            }
-
-            iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
-            iconFrame: false
-            Rectangle {
-                visible: selected
-                anchors.fill: parent
-                color: "#1382DE";
-                z: -1
-            }
-        }
-        Timer {
-            id: positionTimer
-            property int positionIndex
-            interval: 1000
-            repeat: false
-            onTriggered: {
-
-            }
-        }
-    }
-    Panel {
-        id: fileOpsPanel
-        property bool singleFileOps: true;
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        height: units.gu(8)
-        locked: true
-        onAnimatingChanged: {
-            if (!animating && opened) {
-                dirView.positionViewAtIndex(dirView.positionIndex, ListView.Visible);
-            }
-        }
-        Rectangle {
-            height: parent.height
-            width: parent.width
-            anchors.right: parent.right
-            Row {
-                height: parent.height
-                anchors.right: parent.right
-                anchors.rightMargin: units.gu(2)
-                spacing: units.gu(2)
-                ToolbarButton {
+            ]
+            contents: CurrentPathHeader { }
+       },
+        PageHeadState {
+            name: "edit"
+            head: filesPage.head
+            actions: [
+                Action {
                     iconName: "share"
                     text: "Open"
-                    enabled: fileOpsPanel.singleFileOps
+                    enabled: dirView.selectedCount == 1
                     onTriggered: {
                         var file = mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]];
                         if (DownloadFile.fileExists(file.path) &&
@@ -209,10 +98,11 @@ Page {
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         }
                     }
-                }
-                ToolbarButton {
+                },
+                Action {
                     iconName: "delete"
                     text: "Delete"
+                    enabled: dirView.selectedCount >= 1
                     onTriggered: {
                         mainView.busy = true;
                         for (var i in dirView.selectedIndexes) {
@@ -220,40 +110,136 @@ Page {
                         }
                         dirView.selectedIndexes = [];
                     }
-                }
-                ToolbarButton {
-                    enabled: fileOpsPanel.singleFileOps
+                },
+                Action {
+                    enabled: dirView.selectedCount == 1
                     iconName: "info"
                     text: "Property"
                     onTriggered: {
                         pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
                     }
                 }
+            ]
+            backAction: Action {
+                text: "Cancel"
+                iconName: "close"
+                onTriggered: {
+                    filesPage.editMode = false;
+                    dirView.reset();
+                }
             }
+            contents: CurrentPathHeader { }
         }
-        Connections {
-            target: dirView
-            onSelectedCountChanged: {
-                fileOpsPanel.singleFileOps = (dirView.selectedIndexes.length == 1)
-                if (dirView.selectedIndexes.length == 0) {
-                    fileOpsPanel.close();
+    ]
+
+//    GridView {
+//        id: dirGridView
+//        anchors.fill: parent
+//        visible: false
+//        anchors.topMargin: units.gu(2)
+//        model: mainView.fileMetaInfo.contents
+//        delegate: Item {
+//            Column {
+//                Icon {
+//                    width: units.gu(6);
+//                    height: width
+//                    source: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
+//                    anchors.horizontalCenter: parent.horizontalCenter
+//                }
+//                Label {
+//                    text: Utils.getFileNameFromPath(modelData.path)
+//                    width: units.gu(12);
+//                    elide: Text.ElideRight
+//                    horizontalAlignment: Text.AlignHCenter
+//                }
+//            }
+//        }
+//    }
+
+    ListView {
+        id: dirView
+        //visible: false
+        property int positionIndex
+        property var selectedIndexes: {[]}
+        property int selectedCount: 0;
+        anchors.fill: parent
+
+        model: mainView.fileMetaInfo.contents
+        clip: true
+
+        function reset() {
+            dirView.selectedIndexes = [];
+            selectedCount = 0;
+        }
+
+        onSelectedCountChanged: {
+            filesPage.editMode = selectedCount > 0;
+        }
+        delegate: ListItem.Standard {
+            id: fileListItem
+            property bool selected;
+            text: Utils.getFileNameFromPath(modelData.path)
+
+            iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
+            iconFrame: false
+            Component.onCompleted: selected = dirView.selectedIndexes.indexOf(index) > -1
+            onClicked: {
+                if (modelData.is_dir && !filesPage.editMode) {
+                    mainView.listDir(modelData.path);
+                    dirView.reset();
+                    return;
+                }
+
+                if (!selected) {
+                    dirView.selectedIndexes.push(index)
+                    selected = true;
+                    dirView.positionIndex = index
+                    dirView.selectedCount ++;
                 } else {
-                    fileOpsPanel.open();
+                    for (var i in dirView.selectedIndexes) {
+                        if (dirView.selectedIndexes[i] === index) {
+                            dirView.selectedIndexes.splice(i, 1);
+                            dirView.selectedCount --;
+                            break;
+                        }
+                    }
+                    selected = false;
+                }
+            }
+
+            Rectangle {
+                visible: selected
+                anchors.fill: parent
+                color: "#1382DE";
+                z: -1
+            }
+
+            Connections {
+                target: dirView
+                onSelectedCountChanged: {
+                    if (dirView.selectedCount == 0) fileListItem.selected = false;
                 }
             }
         }
     }
+    Item {
+        anchors.fill: parent
+        MouseArea {
+            anchors.fill: parent
+            enabled: ai.running || downloadAI.running
+        }
 
-    ActivityIndicator {
+        ActivityIndicator {
         id: ai
         anchors.centerIn: parent
         visible: running
         running: mainView.busy
-    }
-    ActivityIndicator {
-        id: downloadAI
-        anchors.centerIn: parent
-        visible: running
-        running: false
+        }
+        ActivityIndicator {
+            id: downloadAI
+            anchors.centerIn: parent
+            visible: running
+            running: false
+        }
     }
 }
