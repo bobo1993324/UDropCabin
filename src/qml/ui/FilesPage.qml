@@ -107,33 +107,49 @@ Page {
         delegate: ListItem.Standard {
             property bool selected;
             text: Utils.getFileNameFromPath(modelData.path)
-            progression: modelData.is_dir
             Component.onCompleted: selected = dirView.selectedIndexes.indexOf(index) > -1
             onClicked: {
-                if (modelData.is_dir) {
-                    mainView.listDir(modelData.path);
-                    reset();
-                    fileOpsPanel.close();
-                }
-                else {
-                    if (!selected) {
-                        dirView.selectedIndexes.push(index)
-                        selected = true;
-                        dirView.positionIndex = index
-                    } else {
-                        for (var i in dirView.selectedIndexes) {
-                            if (dirView.selectedIndexes[i] === index) {
-                                dirView.selectedIndexes.splice(i, 1);
-                                break;
-                            }
+                if (!selected) {
+                    dirView.selectedIndexes.push(index)
+                    selected = true;
+                    dirView.positionIndex = index
+                } else {
+                    for (var i in dirView.selectedIndexes) {
+                        if (dirView.selectedIndexes[i] === index) {
+                            dirView.selectedIndexes.splice(i, 1);
+                            break;
                         }
-                        console.log(dirView.selectedIndexes);
-                        selected = false;
                     }
-                    dirView.selectedCountChanged();
+                    console.log(dirView.selectedIndexes);
+                    selected = false;
                 }
-
+                dirView.selectedCountChanged();
             }
+            Item {
+                height: parent.height
+                width: units.gu(10)
+                anchors.right: parent.right
+                visible: modelData.is_dir
+                Icon {
+                    name: 'next'
+                    width: units.gu(3)
+                    height: width
+                    anchors {
+                        centerIn: parent
+                    }
+                }
+                MouseArea {
+                    enabled: modelData.is_dir
+                    preventStealing: true
+                    anchors.fill: parent
+                    onClicked: {
+                        mainView.listDir(modelData.path);
+                        dirView.reset();
+                        fileOpsPanel.close();
+                    }
+                }
+            }
+
             iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
             iconFrame: false
             Rectangle {
@@ -180,7 +196,7 @@ Page {
                 ToolbarButton {
                     iconName: "share"
                     text: "Open"
-                    visible: fileOpsPanel.singleFileOps
+                    enabled: fileOpsPanel.singleFileOps
                     onTriggered: {
                         var file = mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]];
                         if (DownloadFile.fileExists(file.path) &&
@@ -206,7 +222,7 @@ Page {
                     }
                 }
                 ToolbarButton {
-                    visible: fileOpsPanel.singleFileOps
+                    enabled: fileOpsPanel.singleFileOps
                     iconName: "info"
                     text: "Property"
                     onTriggered: {
