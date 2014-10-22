@@ -44,6 +44,11 @@ Page {
                 }
             },
             Action {
+                text: "Refresh"
+                iconName: "reload"
+                onTriggered: mainView.refreshDir();
+            },
+            Action {
                 text: "Settings"
                 iconName: "settings"
                 onTriggered: {
@@ -116,7 +121,13 @@ Page {
                         selected = true;
                         dirView.positionIndex = index
                     } else {
-                        dirView.selectedIndexes.pop(index)
+                        for (var i in dirView.selectedIndexes) {
+                            if (dirView.selectedIndexes[i] === index) {
+                                dirView.selectedIndexes.splice(i, 1);
+                                break;
+                            }
+                        }
+                        console.log(dirView.selectedIndexes);
                         selected = false;
                     }
                     dirView.selectedCountChanged();
@@ -187,7 +198,11 @@ Page {
                     iconName: "delete"
                     text: "Delete"
                     onTriggered: {
-
+                        mainView.busy = true;
+                        for (var i in dirView.selectedIndexes) {
+                            QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
+                        }
+                        dirView.selectedIndexes = [];
                     }
                 }
                 ToolbarButton {

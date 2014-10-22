@@ -154,6 +154,11 @@ MainView {
                 busy = false
             }
         }
+        onFileDeleteCompleted: {
+            console.log("delete complete")
+            mainView.busy = false;
+            refreshDirTimer.restart();
+        }
     }
 
     function afterAccessGranted() {
@@ -187,5 +192,11 @@ MainView {
 
     function refreshDir() {
         listDir(fileMetaInfo.path)
+    }
+    Timer {
+        id: refreshDirTimer
+        repeat: false
+        interval: 1000
+        onTriggered: mainView.refreshDir();
     }
 }
