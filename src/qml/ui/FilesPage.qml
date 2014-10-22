@@ -62,6 +62,14 @@ Page {
                    onTriggered: mainView.refreshDir();
                },
                Action {
+                   property bool listView: dirView.format == "list"
+                   text: listView ? "Grid View" : "ListView"
+                   iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
+                   onTriggered: {
+                       dirView.format = (listView ? "grid" : "list");
+                   }
+               },
+               Action {
                    text: "Settings"
                    iconName: "settings"
                    onTriggered: {
@@ -97,6 +105,7 @@ Page {
                             downloadAI.running = false;
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         }
+                        dirView.reset()
                     }
                 },
                 Action {
@@ -108,7 +117,7 @@ Page {
                         for (var i in dirView.selectedIndexes) {
                             QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
                         }
-                        dirView.selectedIndexes = [];
+                        dirView.reset()
                     }
                 },
                 Action {
@@ -117,6 +126,7 @@ Page {
                     text: "Property"
                     onTriggered: {
                         pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
+                        dirView.reset()
                     }
                 }
             ]
@@ -132,96 +142,15 @@ Page {
         }
     ]
 
-//    GridView {
-//        id: dirGridView
-//        anchors.fill: parent
-//        visible: false
-//        anchors.topMargin: units.gu(2)
-//        model: mainView.fileMetaInfo.contents
-//        delegate: Item {
-//            Column {
-//                Icon {
-//                    width: units.gu(6);
-//                    height: width
-//                    source: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
-//                    anchors.horizontalCenter: parent.horizontalCenter
-//                }
-//                Label {
-//                    text: Utils.getFileNameFromPath(modelData.path)
-//                    width: units.gu(12);
-//                    elide: Text.ElideRight
-//                    horizontalAlignment: Text.AlignHCenter
-//                }
-//            }
-//        }
-//    }
-
-    ListView {
+    DirView {
         id: dirView
-        //visible: false
-        property int positionIndex
-        property var selectedIndexes: {[]}
-        property int selectedCount: 0;
         anchors.fill: parent
-
         model: mainView.fileMetaInfo.contents
-        clip: true
-
-        function reset() {
-            dirView.selectedIndexes = [];
-            selectedCount = 0;
-        }
-
         onSelectedCountChanged: {
             filesPage.editMode = selectedCount > 0;
         }
-        delegate: ListItem.Standard {
-            id: fileListItem
-            property bool selected;
-            text: Utils.getFileNameFromPath(modelData.path)
-
-            iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
-            iconFrame: false
-            Component.onCompleted: selected = dirView.selectedIndexes.indexOf(index) > -1
-            onClicked: {
-                if (modelData.is_dir && !filesPage.editMode) {
-                    mainView.listDir(modelData.path);
-                    dirView.reset();
-                    return;
-                }
-
-                if (!selected) {
-                    dirView.selectedIndexes.push(index)
-                    selected = true;
-                    dirView.positionIndex = index
-                    dirView.selectedCount ++;
-                } else {
-                    for (var i in dirView.selectedIndexes) {
-                        if (dirView.selectedIndexes[i] === index) {
-                            dirView.selectedIndexes.splice(i, 1);
-                            dirView.selectedCount --;
-                            break;
-                        }
-                    }
-                    selected = false;
-                }
-            }
-
-            Rectangle {
-                visible: selected
-                anchors.fill: parent
-                color: "#1382DE";
-                z: -1
-            }
-
-            Connections {
-                target: dirView
-                onSelectedCountChanged: {
-                    if (dirView.selectedCount == 0) fileListItem.selected = false;
-                }
-            }
-        }
     }
+
     Item {
         anchors.fill: parent
         MouseArea {
