@@ -34,19 +34,18 @@ Page {
                                       });
                        contentDialog.transferCompleteForUpload.connect(
                            function(files) {
+                               var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
+                                                                            isDownloading: false
+                                                                          });
                                for (var i in files) {
                                    var sourcePath = files[i].url.toString().replace("file://", "");
-                                   mainView.busy = true;
+                                   uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
                                    UploadFile.upload(sourcePath,
                                        mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
-                                   mainView.busy = false;
                                }
+                               uploadProgressDialog.close();
                                mainView.refreshDir();
                            });
-
-                       UploadFile.upload("/home/boren/examples.desktop",
-                                         mainView.fileMetaInfo.path + "/example.desktop")
-                       mainView.refreshDir();
                    }
                },
                Action {
@@ -100,7 +99,6 @@ Page {
                                 DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000")){
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         } else {
-                            downloadAI.running = true;
                             var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
                                                                  {
                                                                      isDownloading: true,
@@ -108,7 +106,6 @@ Page {
                                                                  })
                             DownloadFile.download(file.path);
                             downloadDialog.close();
-                            downloadAI.running = false;
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         }
                         dirView.reset()
@@ -161,7 +158,7 @@ Page {
         anchors.fill: parent
         MouseArea {
             anchors.fill: parent
-            enabled: ai.running || downloadAI.running
+            enabled: ai.running
         }
 
         ActivityIndicator {
@@ -169,12 +166,6 @@ Page {
         anchors.centerIn: parent
         visible: running
         running: mainView.busy
-        }
-        ActivityIndicator {
-            id: downloadAI
-            anchors.centerIn: parent
-            visible: running
-            running: false
         }
     }
 }

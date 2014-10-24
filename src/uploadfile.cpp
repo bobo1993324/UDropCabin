@@ -1,18 +1,16 @@
 #include "uploadfile.h"
 #include <QFile>
 UploadFile::UploadFile(QDropbox *qdropbox)
+    : TaskWithProgress()
 {
     currentFile = new QDropboxFile(qdropbox);
-}
-
-UploadFile::~UploadFile()
-{
-    delete currentFile;
+    connectQDropboxFile(currentFile);
 }
 
 void UploadFile::upload(QString sourcePath, QString pathToUpload)
 {
     qDebug() << "upload called with" << sourcePath << pathToUpload;
+    setProgress(-1);
     currentFile->setFilename("/dropbox" + pathToUpload);
     QFile sourceFile(sourcePath);
     sourceFile.open(QFile::ReadOnly);

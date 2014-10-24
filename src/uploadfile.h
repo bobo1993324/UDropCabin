@@ -1,11 +1,16 @@
 #include "qdropbox.h"
 #include "qdropboxfile.h"
-class UploadFile: public QObject {
+#include "taskwithprogress.h"
+class UploadFile: public TaskWithProgress {
     Q_OBJECT
 public:
     UploadFile(QDropbox * qdropbox);
-    ~UploadFile();
+
+    float progress();
+
     Q_INVOKABLE void upload(QString sourcePath, QString pathToUpload);
+signals:
+    void progressChanged();
 private:
     QDropboxFile * currentFile;
     QString basePath;

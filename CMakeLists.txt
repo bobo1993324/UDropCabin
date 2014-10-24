@@ -5,6 +5,7 @@ set(SRC
     src/downloadfile.cpp
     src/uploadfile.cpp
     src/path.cpp
+    src/taskwithprogress.cpp
 )
 
 set(CMAKE_AUTOMOC ON)

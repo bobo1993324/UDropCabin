@@ -1,14 +1,13 @@
 #include "downloadfile.h"
 #include <QDir>
 DownloadFile::DownloadFile(QDropbox * qdropbox)
-    : m_progress(-1) {
+    : TaskWithProgress() {
     currentFile = new QDropboxFile(qdropbox);
     basePath = QDir::homePath() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/";
     if (!QDir(basePath).exists()) {
         QDir().mkpath(basePath);
     }
-
-    connect(currentFile, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(handleDownloadProgress(qint64,qint64)));
+    connectQDropboxFile(currentFile);
 }
 
 bool DownloadFile::fileExists(QString dropboxPath) {
@@ -17,8 +16,7 @@ bool DownloadFile::fileExists(QString dropboxPath) {
 
 void DownloadFile::download(QString path) {
 
-    m_progress = -1;
-    emit progressChanged();
+    setProgress(-1);
 
     currentFile->setFilename("/dropbox/" + path);
     currentFile->open(QFile::ReadOnly);
@@ -47,16 +45,4 @@ QDateTime DownloadFile::getDateTimeUTC(QString dateTime, QString format) {
     QDateTime qdt = QDateTime::fromString(dateTime, format);
     qdt.setTimeSpec(Qt::UTC);
     return qdt;
-}
-
-void DownloadFile::handleDownloadProgress(qint64 downloaded, qint64 total)
-{
-    m_progress = downloaded / (float) total;
-    emit progressChanged();
-}
-
-
-float DownloadFile::progress()
-{
-    return m_progress;
 }
