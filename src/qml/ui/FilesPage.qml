@@ -62,7 +62,7 @@ Page {
                },
                Action {
                    property bool listView: dirView.format == "list"
-                   text: listView ? "Grid View" : "ListView"
+                   text: listView ? "Grid View" : "List View"
                    iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
                    onTriggered: {
                        dirView.format = (listView ? "grid" : "list");
@@ -116,11 +116,21 @@ Page {
                     text: "Delete"
                     enabled: dirView.selectedCount >= 1
                     onTriggered: {
-                        mainView.busy = true;
+                        var selectedFiles = [];
                         for (var i in dirView.selectedIndexes) {
-                            QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
+                            selectedFiles.push(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
                         }
-                        dirView.reset()
+                        var confirmDialog = PopupUtils.open(Qt.resolvedUrl("../components/RemoveConfirmDialog.qml"), filesPage,
+                                                            {
+                                                                removeFilesPath: selectedFiles
+                                                            });
+                        confirmDialog.confirmed.connect(function() {
+                            mainView.busy = true;
+                            for (var i in dirView.selectedIndexes) {
+                                QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
+                            }
+                            dirView.reset()
+                        });
                     }
                 },
                 Action {
