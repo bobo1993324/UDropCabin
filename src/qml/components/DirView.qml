@@ -5,6 +5,7 @@ import "../js/Utils.js" as Utils
 
 Item {
     id: root
+    property int selectMode: 0 //0: multiple, 1: single, 2:none
     property string format: "grid" // list or grid
     property var selectedIndexes: {[]}
     property int selectedCount: 0;
@@ -59,20 +60,21 @@ Item {
                             root.reset();
                             return;
                         }
-
-                        if (!selected) {
-                            root.selectedIndexes.push(index)
-                            selected = true;
-                            root.selectedCount ++;
-                        } else {
-                            for (var i in root.selectedIndexes) {
-                                if (root.selectedIndexes[i] === index) {
-                                    root.selectedIndexes.splice(i, 1);
-                                    root.selectedCount --;
-                                    break;
+                        if (selectMode != 2) {
+                            if (!selected) {
+                                root.selectedIndexes.push(index)
+                                selected = true;
+                                root.selectedCount ++;
+                            } else {
+                                for (var i in root.selectedIndexes) {
+                                    if (root.selectedIndexes[i] === index) {
+                                        root.selectedIndexes.splice(i, 1);
+                                        root.selectedCount --;
+                                        break;
+                                    }
                                 }
+                                selected = false;
                             }
-                            selected = false;
                         }
                     }
                 }
@@ -115,19 +117,21 @@ Item {
                         return;
                     }
 
-                    if (!selected) {
-                        root.selectedIndexes.push(index)
-                        selected = true;
-                        root.selectedCount ++;
-                    } else {
-                        for (var i in root.selectedIndexes) {
-                            if (root.selectedIndexes[i] === index) {
-                                root.selectedIndexes.splice(i, 1);
-                                root.selectedCount --;
-                                break;
+                    if (selectMode != 2) {
+                        if (!selected) {
+                            root.selectedIndexes.push(index)
+                            selected = true;
+                            root.selectedCount ++;
+                        } else {
+                            for (var i in root.selectedIndexes) {
+                                if (root.selectedIndexes[i] === index) {
+                                    root.selectedIndexes.splice(i, 1);
+                                    root.selectedCount --;
+                                    break;
+                                }
                             }
+                            selected = false;
                         }
-                        selected = false;
                     }
                 }
 

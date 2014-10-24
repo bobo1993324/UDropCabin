@@ -35,6 +35,7 @@ MainView {
     property list<ContentItem> transferItemList
     property bool busy: false
     property bool isOnline: true
+    property bool importingFiles: false;
 
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
@@ -46,6 +47,16 @@ MainView {
             mainView.contentTransfer.state = ContentTransfer.Charged;
             Qt.quit()
         }
+    }
+
+    function cancelImport() {
+        if (mainView.contentTransfer != undefined) {
+            mainView.contentTransfer.state = ContentTransfer.Aborted;
+        } else {
+            console.log("WARN: contentTransfer empty.");
+        }
+
+        mainView.importingFiles = false;
     }
 
     Component {
@@ -179,6 +190,11 @@ MainView {
             console.log("export requested");
             contentTransfer = transfer
             //TODO switch on the export mode
+        }
+        onImportRequested: {
+            console.log("import requested");
+            importingFiles = true;
+            contentTransfer = transfer;
         }
     }
 

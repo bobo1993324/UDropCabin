@@ -1,5 +1,8 @@
 {
 	"source": [
 		"documents"
+	],
+	"destination": [
+		"all"
 	]
 }

@@ -8,20 +8,12 @@ Page {
     id: filesPage
     title: "UDropCabin"
     property bool editMode: false;
-    state: editMode ? "edit" : "navigate"
+    state: mainView.importingFiles ? "import" : (editMode ? "edit" : "navigate")
     states: [
         PageHeadState {
            name: "navigate"
            head: filesPage.head
-           backAction: Action {
-               text: "Up"
-               iconName: "back"
-               enabled: mainView.fileMetaInfo.path !== "/"
-               onTriggered: {
-                   mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
-                   dirView.reset()
-               }
-           }
+           backAction: upAction
            actions: [
                uploadAction,
                createFolderAction,
@@ -116,9 +108,68 @@ Page {
                 }
             }
             contents: CurrentPathHeader { }
-        }
+        },
+        PageHeadState {
+           name: "import"
+           head: filesPage.head
+           backAction: upAction
+           actions: [
+               confirmImportAction,
+               cancelImportAction,
+               createFolderAction,
+               refreshAction
+            ]
+            contents: CurrentPathHeader { }
+       }
     ]
 
+    function uploadFilesInCurrentDirectory(localFilesPath) {
+        var files = localFilesPath;
+        var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
+                                                     isDownloading: false
+                                                   });
+        for (var i in files) {
+            var sourcePath = files[i].url.toString().replace("file://", "");
+            uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
+            UploadFile.upload(sourcePath,
+                mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
+        }
+        uploadProgressDialog.close();
+        mainView.refreshDir();
+    }
+    Action {
+        id: confirmImportAction
+        text: "Confirm"
+        iconName: "tick"
+        onTriggered: {
+            var transferItems = mainView.contentTransfer.items;
+            var urls = [];
+            for (var i in transferItems) {
+                urls.push(transferItems[i].url);
+            }
+            uploadFilesInCurrentDirectory(urls);
+            mainView.importingFiles = false;
+        }
+    }
+    Action {
+        id: cancelImportAction
+        text: "Cancel"
+        iconName: "close"
+        onTriggered: {
+            mainView.cancelImport();
+        }
+    }
+
+    Action {
+        id: upAction
+       text: "Up"
+       iconName: "back"
+       enabled: mainView.fileMetaInfo.path !== "/"
+       onTriggered: {
+           mainView.listDir(Utils.getParentPath(mainView.fileMetaInfo.path))
+           dirView.reset()
+       }
+   }
     Action {
         id: createFolderAction
         iconSource: Qt.resolvedUrl("../graphics/new-folder.svg")
@@ -143,20 +194,7 @@ Page {
                            {
                                isUpload: true
                            });
-            contentDialog.transferCompleteForUpload.connect(
-                function(files) {
-                    var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
-                                                                 isDownloading: false
-                                                               });
-                    for (var i in files) {
-                        var sourcePath = files[i].url.toString().replace("file://", "");
-                        uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
-                        UploadFile.upload(sourcePath,
-                            mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
-                    }
-                    uploadProgressDialog.close();
-                    mainView.refreshDir();
-                });
+            contentDialog.transferCompleteForUpload.connect(filesPage.uploadFilesInCurrentDirectory);
         }
     }
     Action {
@@ -201,6 +239,7 @@ Page {
 
     DirView {
         id: dirView
+        selectMode: filesPage.state == "import" ? 2 : 0
         anchors.fill: parent
         model: mainView.fileMetaInfo.contents
         onSelectedCountChanged: {
