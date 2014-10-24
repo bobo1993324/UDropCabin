@@ -160,6 +160,11 @@ MainView {
             mainView.busy = false;
             refreshDirTimer.restart();
         }
+        onCreateFolderCompleted: {
+            console.log("create folder complete")
+            mainView.busy = false;
+            refreshDirTimer.restart();
+        }
     }
 
     function afterAccessGranted() {

@@ -23,65 +23,13 @@ Page {
                }
            }
            actions: [
-               Action {
-                   text: "Upload"
-                   iconName: "add"
-                   onTriggered: {
-                       var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
-                                      filesPage,
-                                      {
-                                          isUpload: true
-                                      });
-                       contentDialog.transferCompleteForUpload.connect(
-                           function(files) {
-                               var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
-                                                                            isDownloading: false
-                                                                          });
-                               for (var i in files) {
-                                   var sourcePath = files[i].url.toString().replace("file://", "");
-                                   uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
-                                   UploadFile.upload(sourcePath,
-                                       mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
-                               }
-                               uploadProgressDialog.close();
-                               mainView.refreshDir();
-                           });
-                   }
-               },
-               Action {
-                   text: "Edit"
-                   iconName: "edit"
-                   onTriggered: {
-                       filesPage.editMode = true;
-                   }
-               },
-               Action {
-                   text: "Refresh"
-                   iconName: "reload"
-                   onTriggered: mainView.refreshDir();
-               },
-               Action {
-                   property bool listView: dirView.format == "list"
-                   text: listView ? "Grid View" : "List View"
-                   iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
-                   onTriggered: {
-                       dirView.format = (listView ? "grid" : "list");
-                   }
-               },
-               Action {
-                   text: "Settings"
-                   iconName: "settings"
-                   onTriggered: {
-                       pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
-                   }
-               }, Action {
-                   text: "About"
-                   iconSource: "image://theme/help"
-                   onTriggered: {
-                       pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
-                   }
-               }
-
+               uploadAction,
+               createFolderAction,
+               editAction,
+               refreshAction,
+               listGridViewAction,
+               settingAction,
+               aboutAction
             ]
             contents: CurrentPathHeader { }
        },
@@ -170,6 +118,86 @@ Page {
             contents: CurrentPathHeader { }
         }
     ]
+
+    Action {
+        id: createFolderAction
+        iconSource: Qt.resolvedUrl("../graphics/new-folder.svg")
+        text: "Create Folder"
+        onTriggered: {
+            var createFolderDialog = PopupUtils.open(Qt.resolvedUrl("../components/CreateFolderDialog.qml"))
+            createFolderDialog.createFolder.connect(function(folderName) {
+                console.log("create folder " + folderName);
+                mainView.busy = true;
+                QDropbox.requestCreateFolder(mainView.fileMetaInfo.path + "/" + folderName);
+            });
+        }
+    }
+
+    Action {
+        id: uploadAction
+        text: "Upload"
+        iconName: "add"
+        onTriggered: {
+            var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
+                           filesPage,
+                           {
+                               isUpload: true
+                           });
+            contentDialog.transferCompleteForUpload.connect(
+                function(files) {
+                    var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
+                                                                 isDownloading: false
+                                                               });
+                    for (var i in files) {
+                        var sourcePath = files[i].url.toString().replace("file://", "");
+                        uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
+                        UploadFile.upload(sourcePath,
+                            mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
+                    }
+                    uploadProgressDialog.close();
+                    mainView.refreshDir();
+                });
+        }
+    }
+    Action {
+        id: editAction
+        text: "Edit"
+        iconName: "edit"
+        onTriggered: {
+            filesPage.editMode = true;
+        }
+    }
+    Action {
+        id: refreshAction
+        text: "Refresh"
+        iconName: "reload"
+        onTriggered: mainView.refreshDir();
+    }
+    Action {
+        id: listGridViewAction
+        property bool listView: dirView.format == "list"
+        text: listView ? "Grid View" : "List View"
+        iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
+        onTriggered: {
+            dirView.format = (listView ? "grid" : "list");
+        }
+    }
+    Action {
+        id: settingAction
+        text: "Settings"
+        iconName: "settings"
+        onTriggered: {
+            pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+        }
+    }
+    Action {
+        id: aboutAction
+        text: "About"
+        iconSource: "image://theme/help"
+        onTriggered: {
+            pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+        }
+    }
 
     DirView {
         id: dirView
