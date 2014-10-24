@@ -101,7 +101,13 @@ Page {
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         } else {
                             downloadAI.running = true;
+                            var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
+                                                                 {
+                                                                     isDownloading: true,
+                                                                     currentFileName: Utils.getFileNameFromPath(file.path)
+                                                                 })
                             DownloadFile.download(file.path);
+                            downloadDialog.close();
                             downloadAI.running = false;
                             mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         }

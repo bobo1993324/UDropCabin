@@ -28,10 +28,12 @@ Item {
             id: dirGridView
             anchors.fill: parent
             model: root.model
+            cellHeight: units.gu(14)
+            cellWidth: cellHeight
             delegate: Item {
                 id: fileGridItem
                 property bool selected
-                width: units.gu(14)
+                width: dirGridView.cellHeight
                 height: width
                 Column {
                     id: contentColumn

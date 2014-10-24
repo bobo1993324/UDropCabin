@@ -38,7 +38,7 @@ MainView {
 
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
-            PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"))
+            PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"), mainView, {"exportFilePath" : path})
         } else {
             mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path}) ]
             mainView.contentTransfer.items = mainView.transferItemList;
@@ -172,6 +172,7 @@ MainView {
             // show content picker
             console.log("export requested");
             contentTransfer = transfer
+            //TODO switch on the export mode
         }
     }
 
