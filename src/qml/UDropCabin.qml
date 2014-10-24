@@ -38,8 +38,9 @@ MainView {
 
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
-            PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"), mainView, {"exportFilePath" : path})
+            PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"), mainView, {"exportFilesPath" : path})
         } else {
+            //TODO support multiple files
             mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path}) ]
             mainView.contentTransfer.items = mainView.transferItemList;
             mainView.contentTransfer.state = ContentTransfer.Charged;

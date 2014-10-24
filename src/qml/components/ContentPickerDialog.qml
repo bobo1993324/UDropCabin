@@ -27,7 +27,7 @@ Popups.PopupBase  {
     property var activeTransfer
     property var selectedItems
     property bool isUpload: false
-    property string exportFilePath;
+    property string exportFilesPath;
 
     signal transferCompleteForUpload(var files);
 
@@ -65,7 +65,12 @@ Popups.PopupBase  {
         onStateChanged: {
             console.log("Transfer state is " + picker.activeTransfer.state + " " + ContentTransfer.InProgress)
             if (!picker.isUpload && picker.activeTransfer.state === ContentTransfer.InProgress) {
-                picker.activeTransfer.items = [transferComponent.createObject(mainView, {"url": picker.exportFilePath}) ]
+                var contentItems = [];
+                for (var i in picker.exportFilesPath) {
+                    contentItems.push(transferComponent.createObject(mainView, {"url": picker.exportFilesPath[i]}))
+                }
+
+                picker.activeTransfer.items = contentItems;
                 picker.activeTransfer.state = ContentTransfer.Charged;
                 closeTimer.start()
             } else if (picker.isUpload && picker.activeTransfer.state === ContentTransfer.Charged) {

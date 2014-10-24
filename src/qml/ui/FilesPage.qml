@@ -92,23 +92,39 @@ Page {
                 Action {
                     iconName: "share"
                     text: "Open"
-                    enabled: dirView.selectedCount == 1
+                    enabled: dirView.selectedCount >= 1
                     onTriggered: {
-                        var file = mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]];
-                        if (DownloadFile.fileExists(file.path) &&
-                                DownloadFile.getModify(file.path) > DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000")){
-                            mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
-                        } else {
+                        var files = [];
+                        for (var i in dirView.selectedIndexes) {
+                            files.push (mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]]);
+                        }
+                        var filesNeedToDownload = [];
+                        for (var i in files) {
+                            if (DownloadFile.fileExists(files[i].path) &&
+                                    DownloadFile.getModify(files[i].path) > DownloadFile.getDateTimeUTC(files[i].modified, "ddd, dd MMM yyyy hh:mm:ss +0000")) {
+                                //already downloaded
+                            } else {
+                                filesNeedToDownload.push(files[i]);
+                            }
+                        }
+                        if (filesNeedToDownload.length >= 0) {
                             var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
                                                                  {
-                                                                     isDownloading: true,
-                                                                     currentFileName: Utils.getFileNameFromPath(file.path)
-                                                                 })
-                            DownloadFile.download(file.path);
+                                                                     isDownloading: true
+                                                                 });
+                            for (var i in filesNeedToDownload) {
+                                downloadDialog.currentFileName = Utils.getFileNameFromPath(filesNeedToDownload[i].path);
+                                DownloadFile.download(filesNeedToDownload[i].path);
+                            }
                             downloadDialog.close();
-                            mainView.sendContentToOtherApps(Utils.dropboxPathToLocalPath(file.path));
                         }
-                        dirView.reset()
+                        var filesLocalPath = [];
+                        for (var i in files) {
+                            filesLocalPath.push(Utils.dropboxPathToLocalPath(files[i]));
+                        }
+
+                        mainView.sendContentToOtherApps(filesLocalPath);
+                        dirView.reset();
                     }
                 },
                 Action {
