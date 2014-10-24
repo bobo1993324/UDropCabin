@@ -27,7 +27,7 @@ Popups.PopupBase  {
     property var activeTransfer
     property var selectedItems
     property bool isUpload: false
-    property string exportFilesPath;
+    property var exportFilesPath;
 
     signal transferCompleteForUpload(var files);
 

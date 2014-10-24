@@ -107,7 +107,7 @@ Page {
                                 filesNeedToDownload.push(files[i]);
                             }
                         }
-                        if (filesNeedToDownload.length >= 0) {
+                        if (filesNeedToDownload.length > 0) {
                             var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
                                                                  {
                                                                      isDownloading: true
@@ -120,7 +120,7 @@ Page {
                         }
                         var filesLocalPath = [];
                         for (var i in files) {
-                            filesLocalPath.push(Utils.dropboxPathToLocalPath(files[i]));
+                            filesLocalPath.push(Utils.dropboxPathToLocalPath(files[i].path));
                         }
 
                         mainView.sendContentToOtherApps(filesLocalPath);
