@@ -65,10 +65,10 @@ Popups.PopupBase  {
         onStateChanged: {
             console.log("Transfer state is " + picker.activeTransfer.state + " " + ContentTransfer.InProgress)
             if (!picker.isUpload && picker.activeTransfer.state === ContentTransfer.InProgress) {
-                picker.activeTransfer.items = [transferComponent.createObject(mainView, {"url": [picker.exportFilePath]}) ]
+                picker.activeTransfer.items = [transferComponent.createObject(mainView, {"url": picker.exportFilePath}) ]
                 picker.activeTransfer.state = ContentTransfer.Charged;
                 closeTimer.start()
-            } if (!picker.isUpload && picker.activeTransfer.state === ContentTransfer.Charged) {
+            } else if (picker.isUpload && picker.activeTransfer.state === ContentTransfer.Charged) {
                 picker.transferCompleteForUpload(picker.activeTransfer.items);
                 closeTimer.start();
             }
