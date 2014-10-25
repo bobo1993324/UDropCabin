@@ -143,12 +143,9 @@ Page {
         iconName: "tick"
         onTriggered: {
             var transferItems = mainView.contentTransfer.items;
-            var urls = [];
-            for (var i in transferItems) {
-                urls.push(transferItems[i].url);
-            }
-            uploadFilesInCurrentDirectory(urls);
+            uploadFilesInCurrentDirectory(transferItems);
             mainView.importingFiles = false;
+            mainView.contentTransfer = undefined;
         }
     }
     Action {

@@ -55,8 +55,8 @@ MainView {
         } else {
             console.log("WARN: contentTransfer empty.");
         }
-
         mainView.importingFiles = false;
+        mainView.contentTransfer = undefined;
     }
 
     Component {
