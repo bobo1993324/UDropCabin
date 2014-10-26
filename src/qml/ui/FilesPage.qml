@@ -122,8 +122,40 @@ Page {
             contents: CurrentPathHeader { }
        }
     ]
-
+    Component.onCompleted: uploadFilesInCurrentDirectory();
     function uploadFilesInCurrentDirectory(localFilesPath) {
+        // resolve conflicts
+        var filesToOverride = []
+        for (var i in localFilesPath) {
+            for (var j in mainView.fileMetaInfo.contents) {
+                if (Utils.getFileNameFromPath(localFilesPath[i]) === Utils.getFileNameFromPath(mainView.fileMetaInfo.contents[j])) {
+                    filesToOverride.push(localFilesPath[i])
+                }
+            }
+        }
+        filesToOverride = ["hehe.txt", "haha.txt", "xixi.txt"];
+        console.log("files to override " + filesToOverride);
+        if (filesToOverride.length > 0) {
+            var overrideConfirmDialog = PopupUtils.open(Qt.resolvedUrl("../components/OverrideConfirmDialog.qml"), filesPage, {
+                                                            files: filesToOverride
+                                                        });
+            overrideConfirmDialog.complete.connect(function(ignoredFiles) {
+                console.log("ignored files " + ignoredFiles);
+                for (var i in ignoredFiles) {
+                    for (var j in localFilesPath) {
+                        if (ignoredFiles[i] === localFilesPath[j]) {
+                            localFilesPath.splice(j);
+                            break;
+                        }
+                    }
+                }
+                uploadFilesInCurrentDirectory2(localFilesPath);
+            });
+        } else {
+            uploadFilesInCurrentDirectory2(localFilesPath);
+        }
+    }
+    function uploadFilesInCurrentDirectory2(localFilesPath) {
         var files = localFilesPath;
         var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
                                                      isDownloading: false
@@ -137,6 +169,7 @@ Page {
         uploadProgressDialog.close();
         mainView.refreshDir();
     }
+
     Action {
         id: confirmImportAction
         text: "Confirm"
