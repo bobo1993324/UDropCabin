@@ -3,6 +3,7 @@
 		"documents"
 	],
 	"destination": [
-        "documents"
+        "documents",
+        "pictures"
 	]
 }

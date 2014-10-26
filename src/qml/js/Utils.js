@@ -14,3 +14,11 @@ function getFileNameFromPath(path) {
 function dropboxPathToLocalPath(dropboxPath) {
     return "file://" + PATH.homeDir() + "/.local/share/com.ubuntu.developer.bobo1993324.udropcabin/Documents/" + dropboxPath;
 }
+
+function transferItems2UrlStrings(transferItems) {
+    var result = [];
+    for (var i in transferItems) {
+        result.push(transferItems[i].url.toString());
+    }
+    return result;
+}

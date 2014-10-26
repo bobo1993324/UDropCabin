@@ -21,6 +21,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0 as Popups
 import Ubuntu.Content 1.1
+import "../js/Utils.js" as Utils
 
 Popups.PopupBase  {
     id: picker
@@ -29,7 +30,7 @@ Popups.PopupBase  {
     property bool isUpload: false
     property var exportFilesPath;
 
-    signal transferCompleteForUpload(var files);
+    signal transferCompleteForUpload(var files);//files in [String]
 
     Rectangle {
         anchors.fill: parent
@@ -74,8 +75,8 @@ Popups.PopupBase  {
                 picker.activeTransfer.state = ContentTransfer.Charged;
                 closeTimer.start()
             } else if (picker.isUpload && picker.activeTransfer.state === ContentTransfer.Charged) {
-                picker.transferCompleteForUpload(picker.activeTransfer.items);
                 closeTimer.start();
+                picker.transferCompleteForUpload(Utils.transferItems2UrlStrings(picker.activeTransfer.items));
             }
         }
     }

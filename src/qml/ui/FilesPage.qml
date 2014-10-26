@@ -122,18 +122,16 @@ Page {
             contents: CurrentPathHeader { }
        }
     ]
-    Component.onCompleted: uploadFilesInCurrentDirectory();
     function uploadFilesInCurrentDirectory(localFilesPath) {
         // resolve conflicts
         var filesToOverride = []
         for (var i in localFilesPath) {
             for (var j in mainView.fileMetaInfo.contents) {
-                if (Utils.getFileNameFromPath(localFilesPath[i]) === Utils.getFileNameFromPath(mainView.fileMetaInfo.contents[j])) {
+                if (Utils.getFileNameFromPath(localFilesPath[i]) === Utils.getFileNameFromPath(localFilesPath[i])) {
                     filesToOverride.push(localFilesPath[i])
                 }
             }
         }
-        filesToOverride = ["hehe.txt", "haha.txt", "xixi.txt"];
         console.log("files to override " + filesToOverride);
         if (filesToOverride.length > 0) {
             var overrideConfirmDialog = PopupUtils.open(Qt.resolvedUrl("../components/OverrideConfirmDialog.qml"), filesPage, {
@@ -161,7 +159,7 @@ Page {
                                                      isDownloading: false
                                                    });
         for (var i in files) {
-            var sourcePath = files[i].url.toString().replace("file://", "");
+            var sourcePath = files[i].replace("file://", "");
             uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
             UploadFile.upload(sourcePath,
                 mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
@@ -176,7 +174,7 @@ Page {
         iconName: "tick"
         onTriggered: {
             var transferItems = mainView.contentTransfer.items;
-            uploadFilesInCurrentDirectory(transferItems);
+            uploadFilesInCurrentDirectory(Utils.transferItems2UrlStrings(transferItems));
             mainView.importingFiles = false;
             mainView.contentTransfer = undefined;
         }
