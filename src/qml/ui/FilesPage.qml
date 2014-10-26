@@ -233,16 +233,36 @@ Page {
             pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
         }
     }
-
     DirView {
         id: dirView
         selectMode: filesPage.state == "import" ? 2 : 0
-        anchors.fill: parent
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            bottom: statusBar.top
+
+        }
+
         model: mainView.fileMetaInfo.contents
         onSelectedCountChanged: {
             filesPage.editMode = selectedCount > 0;
         }
     }
+    ListItem.ThinDivider {
+        width: parent.width
+        anchors.bottom: statusBar.top
+    }
+
+    ListItem.Header {
+        id: statusBar
+        width: parent.width
+        anchors.bottom: parent.bottom
+        height: filesPage.state == "navigate" ? 0 : units.gu(4)
+        text: filesPage.state == "import" ? "Upload files to current directory?"
+                                          : (filesPage.state == "edit") ? "Edit mode: " + dirView.selectedCount + " files selected" : ""
+    }
+
 
     Item {
         anchors.fill: parent
