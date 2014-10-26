@@ -127,7 +127,7 @@ Page {
         var filesToOverride = []
         for (var i in localFilesPath) {
             for (var j in mainView.fileMetaInfo.contents) {
-                if (Utils.getFileNameFromPath(localFilesPath[i]) === Utils.getFileNameFromPath(localFilesPath[i])) {
+                if (Utils.getFileNameFromPath(localFilesPath[i]) === Utils.getFileNameFromPath(mainView.fileMetaInfo.contents[j].path)) {
                     filesToOverride.push(localFilesPath[i])
                 }
             }
@@ -142,12 +142,14 @@ Page {
                 for (var i in ignoredFiles) {
                     for (var j in localFilesPath) {
                         if (ignoredFiles[i] === localFilesPath[j]) {
-                            localFilesPath.splice(j);
+                            localFilesPath.splice(j, 1);
                             break;
                         }
                     }
                 }
-                uploadFilesInCurrentDirectory2(localFilesPath);
+                if (localFilesPath.length > 0) {
+                    uploadFilesInCurrentDirectory2(localFilesPath);
+                }
             });
         } else {
             uploadFilesInCurrentDirectory2(localFilesPath);
