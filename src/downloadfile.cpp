@@ -46,3 +46,26 @@ QDateTime DownloadFile::getDateTimeUTC(QString dateTime, QString format) {
     qdt.setTimeSpec(Qt::UTC);
     return qdt;
 }
+
+void DownloadFile::clear()
+{
+    removePath(basePath);
+}
+
+void DownloadFile::removePath(const QString &path)
+{
+    qDebug() << "removePath" << path;
+    QFileInfo fileInfo(path);
+    if(fileInfo.isDir()){
+        QDir dir(path);
+        QStringList fileList = dir.entryList();
+        for(int i = 0; i < fileList.count(); ++i){
+            if (fileList.at(i) != "." && fileList.at(i) != "..")
+                removePath(path  + "/" + fileList.at(i));
+        }
+        dir.rmpath(path);
+    }
+    else{
+        QFile::remove(path);
+    }
+}

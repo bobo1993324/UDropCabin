@@ -27,7 +27,8 @@ Page {
         ListItem.Standard {
             text: "Quota"
             control: Label {
-                text: mainView.accountInfo.quota_info.normal + " / " + mainView.accountInfo.quota_info.quota
+                text: Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.normal)
+                      + " / " + Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.quota)
             }
         }
         ListItem.SingleControl {
@@ -37,8 +38,10 @@ Page {
                     settings.logout();
                     QDropbox.token = "";
                     QDropbox.tokenSecret = "";
-                    settings.loadFinished();
+                    DownloadFile.clear();
                     metaDb.clear();
+                    pageStack.pop();
+                    settings.loadFinished();
                 }
             }
         }

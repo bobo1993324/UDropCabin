@@ -6,6 +6,12 @@ Page {
     id: loginPage
     title: "Login"
     property alias url: webView.url
+    head {
+        backAction: Action {
+            visible: false
+        }
+    }
+
     WebView {
         id: webView
         width: parent.width
