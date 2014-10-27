@@ -96,32 +96,15 @@ MainView {
     function accessGranted() {
         console.log("access granted")
         //request access
-        accessTimer.start()
+        QDropbox.requestAccessToken();
         pageStack.pop();
-    }
-
-    Timer {
-        id: accessTimer
-        interval: 1000
-        repeat: false
-        onTriggered: {
-            QDropbox.requestAccessToken();
-        }
-    }
-    Timer {
-        id: loginTimer
-        interval: 1000
-        repeat: false
-        onTriggered: {
-            pageStack.push(Qt.resolvedUrl("./ui/LoginPage.qml"), {url: QDropbox.authorizeLink});
-        }
     }
 
     Connections {
         target: QDropbox
         onRequestTokenFinished:  {
             console.log("request token finished")
-            QDropbox.requestAccessToken();
+            pageStack.push(Qt.resolvedUrl("./ui/LoginPage.qml"), {url: QDropbox.authorizeLink});
         }
         onAccessTokenFinished: {
             console.log("accessTokenFinished");
@@ -132,7 +115,7 @@ MainView {
         }
         onTokenExpired: {
             console.log("token expired");
-            loginTimer.start()
+            QDropbox.requestToken();
         }
         onAccountInfoReceived: {
             console.log("Receive account info");
