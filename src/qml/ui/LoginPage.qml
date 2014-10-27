@@ -10,10 +10,9 @@ Page {
         id: webView
         width: parent.width
         height: parent.height
-        onUrlChanged: {
-            console.log(url);
-            if (url.toString().indexOf("authorize_submit") >= 0) {
-                mainView.accessGranted();
+        onLoadingChanged :{
+            if (!loading && url.toString().indexOf("authorize_submit") >= 0) {
+                mainView.accessGranted();		
             }
         }
     }
