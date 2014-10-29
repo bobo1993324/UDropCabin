@@ -43,7 +43,7 @@ MainView {
             PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"), mainView, {"exportFilesPath" : path})
         } else {
             //TODO support multiple files
-            mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path}) ]
+            mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path[0]}) ]
             mainView.contentTransfer.items = mainView.transferItemList;
             mainView.contentTransfer.state = ContentTransfer.Charged;
 
