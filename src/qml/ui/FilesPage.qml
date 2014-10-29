@@ -8,7 +8,7 @@ Page {
     id: filesPage
     title: "UDropCabin"
     property bool editMode: false;
-    state: mainView.importingFiles ? "import" : (editMode ? "edit" : "navigate")
+    state: mainView.exportingFiles ? "export" : (mainView.importingFiles ? "import" : (editMode ? "edit" : "navigate"))
     states: [
         PageHeadState {
            name: "navigate"
@@ -29,75 +29,9 @@ Page {
             name: "edit"
             head: filesPage.head
             actions: [
-                Action {
-                    iconName: "share"
-                    text: "Open"
-                    enabled: dirView.selectedCount >= 1
-                    onTriggered: {
-                        var files = [];
-                        for (var i in dirView.selectedIndexes) {
-                            files.push (mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]]);
-                        }
-                        var filesNeedToDownload = [];
-                        for (var i in files) {
-                            if (DownloadFile.fileExists(files[i].path) &&
-                                    DownloadFile.getModify(files[i].path) > DownloadFile.getDateTimeUTC(files[i].modified, "ddd, dd MMM yyyy hh:mm:ss +0000")) {
-                                //already downloaded
-                            } else {
-                                filesNeedToDownload.push(files[i]);
-                            }
-                        }
-                        if (filesNeedToDownload.length > 0) {
-                            var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
-                                                                 {
-                                                                     isDownloading: true
-                                                                 });
-                            for (var i in filesNeedToDownload) {
-                                downloadDialog.currentFileName = Utils.getFileNameFromPath(filesNeedToDownload[i].path);
-                                DownloadFile.download(filesNeedToDownload[i].path);
-                            }
-                            downloadDialog.close();
-                        }
-                        var filesLocalPath = [];
-                        for (var i in files) {
-                            filesLocalPath.push(Utils.dropboxPathToLocalPath(files[i].path));
-                        }
-
-                        mainView.sendContentToOtherApps(filesLocalPath);
-                        dirView.reset();
-                    }
-                },
-                Action {
-                    iconName: "delete"
-                    text: "Delete"
-                    enabled: dirView.selectedCount >= 1
-                    onTriggered: {
-                        var selectedFiles = [];
-                        for (var i in dirView.selectedIndexes) {
-                            selectedFiles.push(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
-                        }
-                        var confirmDialog = PopupUtils.open(Qt.resolvedUrl("../components/RemoveConfirmDialog.qml"), filesPage,
-                                                            {
-                                                                removeFilesPath: selectedFiles
-                                                            });
-                        confirmDialog.confirmed.connect(function() {
-                            mainView.busy = true;
-                            for (var i in dirView.selectedIndexes) {
-                                QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
-                            }
-                            dirView.reset()
-                        });
-                    }
-                },
-                Action {
-                    enabled: dirView.selectedCount == 1
-                    iconName: "info"
-                    text: "Property"
-                    onTriggered: {
-                        pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
-                        dirView.reset()
-                    }
-                }
+                openAction,
+                deleteAction,
+                infoAction
             ]
             backAction: Action {
                 text: "Cancel"
@@ -115,12 +49,22 @@ Page {
            backAction: upAction
            actions: [
                confirmImportAction,
-               cancelImportAction,
+               cancelAction,
                createFolderAction,
                refreshAction
             ]
             contents: CurrentPathHeader { }
-       }
+        },
+        PageHeadState {
+            name: "export"
+            head: filesPage.head
+            backAction: upAction
+            actions: [
+                openAction,
+                cancelAction
+            ]
+            contents: CurrentPathHeader { }
+        }
     ]
     function uploadFilesInCurrentDirectory(localFilesPath) {
         // resolve conflicts
@@ -169,7 +113,92 @@ Page {
         uploadProgressDialog.close();
         mainView.refreshDir();
     }
+    Action {
+        id: cancelAction
+        text: "Cancel"
+        iconName: "close"
+        onTriggered: {
+            if (filesPage.state == "import")
+                mainView.cancelImport();
+            else if (filesPage.state == "export") {
+                dirView.selectedCount = 0;
+                mainView.cancelExport();
+            }
+        }
+    }
 
+    Action {
+        id: infoAction
+        enabled: dirView.selectedCount == 1
+        iconName: "info"
+        text: "Property"
+        onTriggered: {
+            pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
+            dirView.reset()
+        }
+    }
+    Action {
+        id: deleteAction
+        iconName: "delete"
+        text: "Delete"
+        enabled: dirView.selectedCount >= 1
+        onTriggered: {
+            var selectedFiles = [];
+            for (var i in dirView.selectedIndexes) {
+                selectedFiles.push(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
+            }
+            var confirmDialog = PopupUtils.open(Qt.resolvedUrl("../components/RemoveConfirmDialog.qml"), filesPage,
+                                                {
+                                                    removeFilesPath: selectedFiles
+                                                });
+            confirmDialog.confirmed.connect(function() {
+                mainView.busy = true;
+                for (var i in dirView.selectedIndexes) {
+                    QDropbox.requestDeleteFile(mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]].path);
+                }
+                dirView.reset()
+            });
+        }
+    }
+    Action {
+        id: openAction
+        iconName: "share"
+        text: "Open"
+        enabled: dirView.selectedCount >= 1
+        onTriggered: {
+            var files = [];
+            for (var i in dirView.selectedIndexes) {
+                files.push (mainView.fileMetaInfo.contents[dirView.selectedIndexes[i]]);
+            }
+            var filesNeedToDownload = [];
+            for (var i in files) {
+                if (DownloadFile.fileExists(files[i].path) &&
+                        DownloadFile.getModify(files[i].path) > DownloadFile.getDateTimeUTC(files[i].modified, "ddd, dd MMM yyyy hh:mm:ss +0000")) {
+                    //already downloaded
+                } else {
+                    filesNeedToDownload.push(files[i]);
+                }
+            }
+            if (filesNeedToDownload.length > 0) {
+                var downloadDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage,
+                                                     {
+                                                         isDownloading: true
+                                                     });
+                for (var i in filesNeedToDownload) {
+                    downloadDialog.currentFileName = Utils.getFileNameFromPath(filesNeedToDownload[i].path);
+                    DownloadFile.download(filesNeedToDownload[i].path);
+                }
+                downloadDialog.close();
+            }
+            var filesLocalPath = [];
+            for (var i in files) {
+                filesLocalPath.push(Utils.dropboxPathToLocalPath(files[i].path));
+            }
+
+            mainView.sendContentToOtherApps(filesLocalPath);
+            dirView.reset();
+        }
+    }
     Action {
         id: confirmImportAction
         text: "Confirm"
@@ -181,15 +210,6 @@ Page {
             mainView.contentTransfer = undefined;
         }
     }
-    Action {
-        id: cancelImportAction
-        text: "Cancel"
-        iconName: "close"
-        onTriggered: {
-            mainView.cancelImport();
-        }
-    }
-
     Action {
         id: upAction
        text: "Up"
@@ -268,7 +288,7 @@ Page {
     }
     DirView {
         id: dirView
-        selectMode: filesPage.state == "import" ? 2 : 0
+        selectMode: filesPage.state == "export" ? 1 : (filesPage.state == "import" ? 2 : 0)
         anchors {
             top: parent.top
             left: parent.left
@@ -292,8 +312,10 @@ Page {
         width: parent.width
         anchors.bottom: parent.bottom
         height: filesPage.state == "navigate" ? 0 : units.gu(4)
-        text: filesPage.state == "import" ? "Upload files to current directory?"
-                                          : (filesPage.state == "edit") ? "Edit mode: " + dirView.selectedCount + " files selected" : ""
+        text: filesPage.state == "export" ? "Open file"
+                :(filesPage.state == "import" ? "Upload files to current directory?"
+                    : (filesPage.state == "edit") ? "Edit mode: " + dirView.selectedCount + " files selected"
+                            : "")
     }
 
 

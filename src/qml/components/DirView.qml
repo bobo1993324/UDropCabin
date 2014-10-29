@@ -19,7 +19,7 @@ Item {
     Loader {
         id: viewLoader
         sourceComponent: root.format == "list" ? dirListComponent : dirGridComponent
-        anchors.fill: parent
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     //TODO refactor dirGridComponent and dirListComponent
@@ -27,7 +27,10 @@ Item {
         id: dirGridComponent
         GridView {
             id: dirGridView
-            anchors.fill: parent
+            clip: true
+            width: Math.floor(root.width / cellWidth) * cellWidth
+            height: root.height
+
             model: root.model
             cellHeight: units.gu(14)
             cellWidth: cellHeight
@@ -55,13 +58,17 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        if (modelData.is_dir && !filesPage.editMode) {
+                        if (modelData.is_dir && filesPage.state != "edit") {
                             mainView.listDir(modelData.path);
                             root.reset();
                             return;
                         }
-                        if (selectMode != 2) {
+                        if (selectMode  != 2) {
                             if (!selected) {
+                                if (selectMode == 1) {
+                                    //singleSelect
+                                    root.selectedCount = 0;
+                                }
                                 root.selectedIndexes.push(index)
                                 selected = true;
                                 root.selectedCount ++;
@@ -99,7 +106,8 @@ Item {
     Component {
         id: dirListComponent
         ListView {
-            anchors.fill: parent
+            width: root.width
+            height: root.height
             model: root.model
             Component.onCompleted: console.log("ListView loaded")
             delegate: ListItem.Standard {

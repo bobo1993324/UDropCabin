@@ -36,6 +36,7 @@ MainView {
     property bool busy: false
     property bool isOnline: true
     property bool importingFiles: false;
+    property bool exportingFiles: false
 
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
@@ -45,7 +46,9 @@ MainView {
             mainView.transferItemList = [transferComponent.createObject(mainView, {"url": path}) ]
             mainView.contentTransfer.items = mainView.transferItemList;
             mainView.contentTransfer.state = ContentTransfer.Charged;
-            Qt.quit()
+
+            mainView.exportingFiles = false;
+            mainView.contentTransfer = undefined;
         }
     }
 
@@ -56,6 +59,16 @@ MainView {
             console.log("WARN: contentTransfer empty.");
         }
         mainView.importingFiles = false;
+        mainView.contentTransfer = undefined;
+    }
+
+    function cancelExport() {
+        if (mainView.contentTransfer != undefined) {
+            mainView.contentTransfer.state = ContentTransfer.Aborted;
+        } else {
+            console.log("WARN: contentTransfer empty.");
+        }
+        mainView.exportingFiles = false;
         mainView.contentTransfer = undefined;
     }
 
@@ -171,6 +184,7 @@ MainView {
         onExportRequested: {
             // show content picker
             console.log("export requested");
+            exportingFiles = true;
             contentTransfer = transfer
             //TODO switch on the export mode
         }
