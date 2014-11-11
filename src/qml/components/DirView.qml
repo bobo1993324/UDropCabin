@@ -9,12 +9,14 @@ Item {
     property string format: "grid" // list or grid
     property var selectedIndexes: {[]}
     property int selectedCount: 0;
+    property int folderSelectedCount: 0;
     property var model;
 
     clip: true
     function reset() {
         selectedIndexes = [];
         selectedCount = 0;
+        folderSelectedCount = 0;
     }
     Loader {
         id: viewLoader
@@ -72,11 +74,16 @@ Item {
                                 root.selectedIndexes.push(index)
                                 selected = true;
                                 root.selectedCount ++;
+                                if (modelData.is_dir) 
+                                    root.folderSelectedCount ++;
                             } else {
                                 for (var i in root.selectedIndexes) {
                                     if (root.selectedIndexes[i] === index) {
                                         root.selectedIndexes.splice(i, 1);
                                         root.selectedCount --;
+                                        if (modelData.is_dir) {
+                                            root.folderSelectedCount --;
+                                        }
                                         break;
                                     }
                                 }

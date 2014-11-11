@@ -162,9 +162,9 @@ Page {
     }
     Action {
         id: openAction
-        iconName: "share"
+        iconName: "external-link"
         text: "Open"
-        enabled: dirView.selectedCount >= 1
+        enabled: dirView.selectedCount >= 1 && dirView.folderSelectedCount == 0
         onTriggered: {
             var files = [];
             for (var i in dirView.selectedIndexes) {
