@@ -48,8 +48,6 @@ Page {
            head: filesPage.head
            backAction: upAction
            actions: [
-               confirmImportAction,
-               cancelAction,
                createFolderAction,
                refreshAction
             ]
@@ -59,10 +57,7 @@ Page {
             name: "export"
             head: filesPage.head
             backAction: upAction
-            actions: [
-                openAction,
-                cancelAction
-            ]
+            actions: []
             contents: CurrentPathHeader { }
         }
     ]
@@ -307,15 +302,52 @@ Page {
         anchors.bottom: statusBar.top
     }
 
-    ListItem.Header {
+    ListItem.Standard {
         id: statusBar
         width: parent.width
+        anchors.bottom: openDialogSelectBar.top
+        height: filesPage.state == "edit" ? units.gu(4) : 0
+        text: "Edit mode: " + dirView.selectedCount + " files selected"
+        clip: true
+        showDivider: false;
+        Rectangle {
+            anchors.fill: parent
+            color: UbuntuColors.darkGrey
+            z: -1
+        }
+    }
+
+    ListItem.Empty {
+        id: openDialogSelectBar
+        height: (filesPage.state == "export" || filesPage.state == "import") ? units.gu(6) : 0;
+        width: parent.width;
         anchors.bottom: parent.bottom
-        height: filesPage.state == "navigate" ? 0 : units.gu(4)
-        text: filesPage.state == "export" ? "Open file"
-                :(filesPage.state == "import" ? "Upload files to current directory?"
-                    : (filesPage.state == "edit") ? "Edit mode: " + dirView.selectedCount + " files selected"
-                            : "")
+        showDivider: false;
+        Rectangle {
+            anchors.fill: parent
+            color: UbuntuColors.darkGrey
+        }
+        Row {
+            height: selectButton.height
+            anchors.centerIn: parent
+            spacing: units.gu(8)
+            Button {
+                id: selectButton
+                text: "Select"
+                visible: filesPage.state == "export";
+                onClicked: openAction.trigger();
+            }
+            Button {
+                id: uploadButton
+                text: "Upload"
+                visible: filesPage.state == "import";
+                onClicked: confirmImportAction.trigger();
+            }
+            Button {
+                text: "Cancel"
+                onClicked: cancelAction.trigger();
+            }
+        }
     }
 
 
