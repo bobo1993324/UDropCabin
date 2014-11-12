@@ -335,6 +335,7 @@ Page {
                 id: selectButton
                 text: "Select"
                 visible: filesPage.state == "export";
+                enabled: openAction.enabled
                 onClicked: openAction.trigger();
             }
             Button {
