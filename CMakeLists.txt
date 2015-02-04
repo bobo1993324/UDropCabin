@@ -25,3 +25,5 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/qml DESTINATION ${CMAKE_CURRENT_BINARY
 
 target_link_libraries(udropcabin ${QtDropboxDir}/libQtDropbox.a)
 qt5_use_modules(udropcabin Core Quick Xml Network)
+
+add_subdirectory("src/qml")
