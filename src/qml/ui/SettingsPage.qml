@@ -14,20 +14,20 @@ Page {
             text: "Name"
             control: Label {
                 id: nameLabel
-                text: mainView.accountInfo.display_name
+                text: mainView.accountInfo.display_name ? mainView.accountInfo.display_name : "Not Available"
             }
         }
         ListItem.Standard {
             text: "Email"
             control: Label {
-                text: mainView.accountInfo.email
+                text: mainView.accountInfo.email ? mainView.accountInfo.email : "Not Available"
             }
         }
         ListItem.Standard {
             text: "Quota"
             control: Label {
-                text: Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.normal)
-                      + " / " + Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.quota)
+                text: mainView.accountInfo.quota_info ? Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.normal)
+                      + " / " + Utils.getReadableFileSizeString(mainView.accountInfo.quota_info.quota) : "Not Available"
             }
         }
         ListItem.SingleControl {

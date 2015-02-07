@@ -46,6 +46,7 @@ Popups.PopupBase  {
             visible: true
             contentType: ContentType.All
             handler: picker.isUpload ? ContentHandler.Source : ContentHandler.Destination
+            headerText: picker.isUpload ? "Upload from" : "Open with"
             onPeerSelected: {
                 if (!picker.isUpload) {
                     peer.selectionType = ContentTransfer.Single
@@ -88,13 +89,7 @@ Popups.PopupBase  {
             picker.close();
         }
     }
-    property color originalTextColor;
-    Component.onCompleted: {
-        originalTextColor = Theme.palette.selected.backgroundText;
-        Theme.palette.selected.backgroundText  = "black";
-    }
     function close() {
-        Theme.palette.selected.backgroundText = originalTextColor;
         PopupUtils.close(picker);
     }
 }

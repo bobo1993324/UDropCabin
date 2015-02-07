@@ -2,6 +2,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Content 0.1
 import Ubuntu.Components.Popups 1.0
+import Ubuntu.Connectivity 1.0
 import "components"
 import "ui"
 
@@ -21,11 +22,8 @@ MainView {
      This property enables the application to change orientation
      when the device is rotated. The default is false.
     */
-    //automaticOrientation: true
+    automaticOrientation: true
     useDeprecatedToolbar: false
-
-    backgroundColor: "#5FBCD3"
-    headerColor: "#00A9D3"
 
     width: units.gu(50)
     height: units.gu(75)
@@ -34,9 +32,14 @@ MainView {
     property var contentTransfer;
     property list<ContentItem> transferItemList
     property bool busy: false
-    property bool isOnline: true
+    property bool isOnline: NetworkingStatus.online
     property bool importingFiles: false;
     property bool exportingFiles: false
+    onIsOnlineChanged: {
+        if (!isOnline && fileMetaInfo.path === undefined) {
+            fileMetaInfo = metaDb.get("/");
+        }
+    }
 
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
@@ -158,7 +161,6 @@ MainView {
             console.log("Error " + errorcode)
             if (errorcode == 1) {
                 console.log("communication error")
-                mainView.isOnline = false;
                 busy = false
             }
         }

@@ -39,8 +39,10 @@ Item {
             delegate: Item {
                 id: fileGridItem
                 property bool selected
+                property bool cachedLocally: DownloadFile.fileExists(modelData.path) || (modelData.is_dir && (metaDb.get(modelData.path) !== undefined))
                 width: dirGridView.cellHeight
                 height: width
+                opacity: (mainView.isOnline || fileGridItem.cachedLocally) ? 1 : 0.6
                 Column {
                     id: contentColumn
                     anchors.centerIn: parent
@@ -59,6 +61,7 @@ Item {
                 }
                 MouseArea {
                     anchors.fill: parent
+                    enabled: mainView.isOnline || fileGridItem.cachedLocally
                     onClicked: {
                         if (modelData.is_dir && filesPage.state != "edit") {
                             mainView.listDir(modelData.path);
@@ -98,12 +101,11 @@ Item {
                         if (root.selectedCount == 0) fileGridItem.selected = false;
                     }
                 }
-
                 UbuntuShape {
                     visible: selected
                     anchors.fill: parent
                     anchors.margins: units.gu(1)
-                    color: "#1382DE";
+                    color: Theme.palette.selected.background;
                     z: -1
                 }
             }
@@ -120,10 +122,14 @@ Item {
             delegate: ListItem.Standard {
                 id: fileListItem
                 property bool selected;
+                property bool cachedLocally: DownloadFile.fileExists(modelData.path) || (modelData.is_dir && (metaDb.get(modelData.path) !== undefined))
                 text: Utils.getFileNameFromPath(modelData.path)
 
                 iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
                 iconFrame: false
+                opacity: (mainView.isOnline || fileListItem.cachedLocally) ? 1 : 0.6
+
+                enabled: mainView.isOnline || fileListItem.cachedLocally
                 Component.onCompleted: selected = root.selectedIndexes.indexOf(index) > -1
                 onClicked: {
                     if (modelData.is_dir && !filesPage.editMode) {
@@ -153,7 +159,7 @@ Item {
                 Rectangle {
                     visible: selected
                     anchors.fill: parent
-                    color: "#1382DE";
+                    color: Theme.palette.selected.background;
                     z: -1
                 }
 

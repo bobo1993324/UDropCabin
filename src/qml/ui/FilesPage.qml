@@ -136,7 +136,7 @@ Page {
         id: deleteAction
         iconName: "delete"
         text: "Delete"
-        enabled: dirView.selectedCount >= 1
+        enabled: dirView.selectedCount >= 1 && mainView.isOnline
         onTriggered: {
             var selectedFiles = [];
             for (var i in dirView.selectedIndexes) {
@@ -208,7 +208,7 @@ Page {
         }
     }
     Action {
-        id: upAction
+       id: upAction
        text: "Up"
        iconName: "back"
        enabled: mainView.fileMetaInfo.path !== "/"
@@ -219,6 +219,7 @@ Page {
    }
     Action {
         id: createFolderAction
+        enabled: mainView.isOnline
         iconSource: Qt.resolvedUrl("../graphics/new-folder.svg")
         text: "Create Folder"
         onTriggered: {
@@ -235,6 +236,7 @@ Page {
         id: uploadAction
         text: "Upload"
         iconName: "add"
+        enabled: mainView.isOnline
         onTriggered: {
             var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),
                            filesPage,
@@ -248,6 +250,7 @@ Page {
         id: editAction
         text: "Edit"
         iconName: "edit"
+        enabled: mainView.isOnline
         onTriggered: {
             filesPage.editMode = true;
         }
@@ -256,6 +259,7 @@ Page {
         id: refreshAction
         text: "Refresh"
         iconName: "reload"
+        enabled: mainView.isOnline
         onTriggered: mainView.refreshDir();
     }
     Action {
@@ -312,11 +316,6 @@ Page {
         text: "Edit mode: " + dirView.selectedCount + " files selected"
         clip: true
         showDivider: false;
-        Rectangle {
-            anchors.fill: parent
-            color: UbuntuColors.darkGrey
-            z: -1
-        }
     }
 
     ListItem.Empty {
