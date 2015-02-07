@@ -1,6 +1,8 @@
 #include "qdropbox.h"
 #include "qdropboxfile.h"
 #include "taskwithprogress.h"
+#include <QDir>
+
 class DownloadFile: public TaskWithProgress {
     Q_OBJECT
 public:
@@ -10,10 +12,11 @@ public:
     Q_INVOKABLE QDateTime getModify(QString dropboxPath);
     Q_INVOKABLE QDateTime getDateTimeUTC(QString dateTime, QString format);
     Q_INVOKABLE void clear();
+    Q_INVOKABLE int localCacheSize();
 signals:
     void progressChanged();
 private:
-
+    int getDirSize(QDir dir);
     void removePath(const QString &path);
 
     QDropboxFile * currentFile;

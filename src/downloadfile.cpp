@@ -1,5 +1,7 @@
 #include "downloadfile.h"
 #include <QDir>
+#include <QFileInfoList>
+#include <QFileInfo>
 DownloadFile::DownloadFile(QDropbox * qdropbox)
     : TaskWithProgress() {
     currentFile = new QDropboxFile(qdropbox);
@@ -50,6 +52,32 @@ QDateTime DownloadFile::getDateTimeUTC(QString dateTime, QString format) {
 void DownloadFile::clear()
 {
     removePath(basePath);
+}
+
+int DownloadFile::localCacheSize()
+{
+    QDir dir(basePath);
+    if (dir.exists()) {
+        return getDirSize(dir);
+    } else {
+        return 0;
+    }
+}
+
+int DownloadFile::getDirSize(QDir dir)
+{
+    int returnVal = 0;
+    QFileInfoList list = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    for (int i = 0; i < list.size(); i++) {
+        QFileInfo f = list[i];
+        qDebug() << f.fileName();
+        if (f.isDir()) {
+            returnVal += getDirSize(QDir(f.path()));
+        } else if (f.isFile()) {
+            returnVal += f.size();
+        }
+    }
+    return returnVal;
 }
 
 void DownloadFile::removePath(const QString &path)

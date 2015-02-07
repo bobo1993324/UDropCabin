@@ -23,6 +23,9 @@ function transferItems2UrlStrings(transferItems) {
     return result;
 }
 function getReadableFileSizeString(fileSizeInBytes) {
+    if (fileSizeInBytes === 0) {
+        return 0;
+    }
 
     var i = -1;
     var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];

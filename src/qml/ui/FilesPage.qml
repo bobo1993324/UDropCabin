@@ -167,8 +167,10 @@ Page {
             }
             var filesNeedToDownload = [];
             for (var i in files) {
+                console.log(JSON.stringify(files[i]));
                 if (DownloadFile.fileExists(files[i].path) &&
-                        DownloadFile.getModify(files[i].path) > DownloadFile.getDateTimeUTC(files[i].modified, "ddd, dd MMM yyyy hh:mm:ss +0000")) {
+                        DownloadFile.getModify(files[i].path) > DownloadFile.getDateTimeUTC(files[i].modified, "ddd, dd MMM yyyy hh:mm:ss +0000")
+                        ) {
                     //already downloaded
                 } else {
                     filesNeedToDownload.push(files[i]);

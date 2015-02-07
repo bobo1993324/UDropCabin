@@ -1,5 +1,6 @@
 project(udropcabin)
 set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_BUILD_TYPE Debug)
 set(SRC
     src/main.cpp
     src/downloadfile.cpp
