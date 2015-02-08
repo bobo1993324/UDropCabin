@@ -32,33 +32,29 @@ Popups.PopupBase  {
 
     signal transferCompleteForUpload(var files);//files in [String]
 
-    Rectangle {
+    ContentTransferHint {
         anchors.fill: parent
+        activeTransfer: picker.activeTransfer
+    }
 
-        ContentTransferHint {
-            anchors.fill: parent
-            activeTransfer: picker.activeTransfer
+    ContentPeerPicker {
+        id: peerPicker
+        anchors.fill: parent
+        visible: true
+        contentType: ContentType.All
+        handler: picker.isUpload ? ContentHandler.Source : ContentHandler.Destination
+        headerText: picker.isUpload ? "Upload from" : "Open with"
+        onPeerSelected: {
+            if (!picker.isUpload) {
+                peer.selectionType = ContentTransfer.Single
+            } else {
+                peer.selectionType = ContentTransfer.Multiple
+            }
+            picker.activeTransfer = peer.request()
+            stateChangeConnection.target = picker.activeTransfer
         }
-
-        ContentPeerPicker {
-            id: peerPicker
-            anchors.fill: parent
-            visible: true
-            contentType: ContentType.All
-            handler: picker.isUpload ? ContentHandler.Source : ContentHandler.Destination
-            headerText: picker.isUpload ? "Upload from" : "Open with"
-            onPeerSelected: {
-                if (!picker.isUpload) {
-                    peer.selectionType = ContentTransfer.Single
-                } else {
-                    peer.selectionType = ContentTransfer.Multiple
-                }
-                picker.activeTransfer = peer.request()
-                stateChangeConnection.target = picker.activeTransfer
-            }
-            onCancelPressed: {
-                picker.close();
-            }
+        onCancelPressed: {
+            picker.close();
         }
     }
 

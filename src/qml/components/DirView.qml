@@ -73,6 +73,7 @@ Item {
                                 if (selectMode == 1) {
                                     //singleSelect
                                     root.selectedCount = 0;
+                                    root.selectedIndexes = [];
                                 }
                                 root.selectedIndexes.push(index)
                                 selected = true;

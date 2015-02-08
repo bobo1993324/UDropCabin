@@ -71,7 +71,7 @@ int DownloadFile::getDirSize(QDir dir)
     for (int i = 0; i < list.size(); i++) {
         QFileInfo f = list[i];
         if (f.isDir()) {
-            returnVal += getDirSize(QDir(f.path()));
+            returnVal += getDirSize(QDir(f.filePath()));
         } else if (f.isFile()) {
             returnVal += f.size();
         }

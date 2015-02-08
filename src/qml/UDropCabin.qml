@@ -36,8 +36,12 @@ MainView {
     property bool importingFiles: false;
     property bool exportingFiles: false
     onIsOnlineChanged: {
+	console.log("isOnlineChanged", isOnline);
         if (!isOnline && fileMetaInfo.path === undefined) {
             fileMetaInfo = metaDb.get("/");
+        } 
+        if (isOnline) {
+            refreshDirTimer.restart();
         }
     }
 
@@ -140,7 +144,6 @@ MainView {
         }
         onMetadataReceived: {
             console.log("file meta recieved")
-            mainView.isOnline = true;
             if (pageStack.depth == 1) {
                 var tmpFileMetaInfo = eval(metadataJson);
                 //sort files, display directroy first
