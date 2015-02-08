@@ -235,7 +235,7 @@ Page {
     Action {
         id: uploadAction
         text: "Upload"
-        iconName: "add"
+        iconName: "note-new"
         enabled: mainView.isOnline
         onTriggered: {
             var contentDialog = PopupUtils.open(Qt.resolvedUrl("../components/ContentPickerDialog.qml"),

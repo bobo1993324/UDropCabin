@@ -41,8 +41,9 @@ Popups.PopupBase  {
         id: peerPicker
         anchors.fill: parent
         visible: true
-        contentType: ContentType.All
-        handler: picker.isUpload ? ContentHandler.Source : ContentHandler.Destination
+        customPeerModelLoader: Loader {
+            sourceComponent: customContentModelComponent
+        }
         headerText: picker.isUpload ? "Upload from" : "Open with"
         onPeerSelected: {
             if (!picker.isUpload) {
@@ -55,6 +56,24 @@ Popups.PopupBase  {
         }
         onCancelPressed: {
             picker.close();
+        }
+    }
+    Component {
+        id: customContentModelComponent
+        Item {
+            id: contentPeerModelItem
+            property var peers: []
+            ContentPeerModel {
+                contentType: ContentType.All
+                handler: picker.isUpload ? ContentHandler.Source : ContentHandler.Destination
+                onFindPeersCompleted: {
+                    for (var i in peers) {
+                        console.log(peers[i].appId);
+                        if (peers[i].appId.indexOf("com.ubuntu.developer.bobo1993324.udropcabin") == 0) continue;
+                        contentPeerModelItem.peers.push(peers[i]);
+                    }
+                }
+            }
         }
     }
 
