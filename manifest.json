@@ -9,8 +9,12 @@
             "apparmor": "uDropCabin.json",
             "content-hub": "uDropCabin-content.json",
             "desktop": "uDropCabin.desktop"
+        },
+        "account-plugin": {
+            "account-provider": "dropbox.provider",
+            "account-qml-plugin": "dropbox-online-account-plugin"
         }
     },
-    "version": "0.2.1",
+    "version": "0.2.2",
     "maintainer": "Boren Zhang <bobo1993324@gmail.com>"
 }
