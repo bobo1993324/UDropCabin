@@ -41,7 +41,8 @@ MainView {
             fileMetaInfo = metaDb.get("/");
         } 
         if (isOnline) {
-            refreshDirTimer.restart();
+            if (fileMetaInfo.path)
+                refreshDirTimer.restart();
         }
     }
 
@@ -177,6 +178,10 @@ MainView {
             mainView.busy = false;
             refreshDirTimer.restart();
         }
+        onMetaNotModified: {
+            console.log("No update on current directory");
+            busy = false;
+        }
     }
 
     function afterAccessGranted() {
@@ -202,16 +207,15 @@ MainView {
 
     function listDir(path) {
         console.log("listDir " + path)
+        var newDir = metaDb.get(path);
+        if (newDir !== undefined)
+            fileMetaInfo = newDir
         if (mainView.isOnline) {
             busy = true
-            QDropbox.requestMetadata("/dropbox/" + path);
-        } else {
-            var newDir = metaDb.get(path);
-            if (newDir !== undefined)
-                fileMetaInfo = newDir
-            else {
-                console.log("Error: not online, no cache for the directory")
-            }
+            if (newDir && newDir.hash)
+                QDropbox.requestMetadata("/dropbox/" + path, false, newDir.hash);
+            else
+                QDropbox.requestMetadata("/dropbox/" + path);
         }
     }
 
