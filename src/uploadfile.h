@@ -9,6 +9,7 @@ public:
     float progress();
 
     Q_INVOKABLE void upload(QString sourcePath, QString pathToUpload);
+    Q_INVOKABLE QStringList photosToUpload();
 signals:
     void progressChanged();
 private:

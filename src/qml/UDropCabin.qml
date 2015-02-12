@@ -35,17 +35,9 @@ MainView {
     property bool isOnline: NetworkingStatus.online
     property bool importingFiles: false;
     property bool exportingFiles: false
-    onIsOnlineChanged: {
-	console.log("isOnlineChanged", isOnline);
-        if (!isOnline && fileMetaInfo.path === undefined) {
-            fileMetaInfo = metaDb.get("/");
-        } 
-        if (isOnline) {
-            if (fileMetaInfo.path)
-                refreshDirTimer.restart();
-        }
-    }
+    property bool editingPhotoUploadPath: false
 
+    property var _filesPage
     function sendContentToOtherApps(path) {
         if (mainView.contentTransfer === undefined) {
             PopupUtils.open(Qt.resolvedUrl("./components/ContentPickerDialog.qml"), mainView, {"exportFilesPath" : path})
@@ -80,6 +72,62 @@ MainView {
         mainView.contentTransfer = undefined;
     }
 
+    function accessGranted() {
+        console.log("access granted")
+        //request access
+        QDropbox.requestAccessToken();
+        pageStack.pop();
+    }
+
+    function afterAccessGranted() {
+        QDropbox.requestAccountInfo();
+        listDir("/");
+    }
+
+    function listDir(path) {
+        console.log("listDir " + path)
+        var newDir = metaDb.get(path);
+        if (newDir !== undefined)
+            fileMetaInfo = newDir
+        if (mainView.isOnline) {
+            busy = true
+            if (newDir && newDir.hash)
+                QDropbox.requestMetadata("/dropbox/" + path, false, newDir.hash);
+            else
+                QDropbox.requestMetadata("/dropbox/" + path);
+        }
+    }
+
+    function refreshDir() {
+        listDir(fileMetaInfo.path)
+    }
+
+    function uploadPhotoes() {
+        if (!exportingFiles && !importingFiles && settings.photoUploadEnabled && settings.dropboxPhotoUploadPath.length > 0) {
+            //automatic upload photo
+            console.log("automatic upload photo")
+            autoPhotoUploadTimer.start();
+        }
+    }
+
+    onIsOnlineChanged: {
+        console.log("isOnlineChanged", isOnline);
+        if (!isOnline && fileMetaInfo.path === undefined) {
+            fileMetaInfo = metaDb.get("/");
+        }
+        if (isOnline) {
+            if (fileMetaInfo.path)
+                refreshDirTimer.restart();
+        }
+    }
+
+    onActiveChanged: {
+        if (active)
+            uploadPhotoes();
+    }
+
+    Component.onCompleted: uploadPhotoes();
+
     Component {
         id: transferComponent
         ContentItem {}
@@ -110,15 +158,8 @@ MainView {
     PageStack {
         id: pageStack
         Component.onCompleted: {
-            pageStack.push(Qt.resolvedUrl("./ui/FilesPage.qml"))
+            _filesPage = pageStack.push(Qt.resolvedUrl("./ui/FilesPage.qml"))
         }
-    }
-
-    function accessGranted() {
-        console.log("access granted")
-        //request access
-        QDropbox.requestAccessToken();
-        pageStack.pop();
     }
 
     Connections {
@@ -144,8 +185,8 @@ MainView {
             console.log(JSON.stringify(accountInfo))
         }
         onMetadataReceived: {
-            console.log("file meta recieved")
-            if (pageStack.depth == 1) {
+            console.log("file meta recieved", editingPhotoUploadPath)
+            if (pageStack.depth == 1 || editingPhotoUploadPath) {
                 var tmpFileMetaInfo = eval(metadataJson);
                 //sort files, display directroy first
                 tmpFileMetaInfo.contents.sort(function(a, b) {
@@ -184,11 +225,6 @@ MainView {
         }
     }
 
-    function afterAccessGranted() {
-        QDropbox.requestAccountInfo();
-        listDir("/");
-    }
-
     Connections {
         target: ContentHub
         onExportRequested: {
@@ -204,28 +240,21 @@ MainView {
             contentTransfer = transfer;
         }
     }
-
-    function listDir(path) {
-        console.log("listDir " + path)
-        var newDir = metaDb.get(path);
-        if (newDir !== undefined)
-            fileMetaInfo = newDir
-        if (mainView.isOnline) {
-            busy = true
-            if (newDir && newDir.hash)
-                QDropbox.requestMetadata("/dropbox/" + path, false, newDir.hash);
-            else
-                QDropbox.requestMetadata("/dropbox/" + path);
-        }
-    }
-
-    function refreshDir() {
-        listDir(fileMetaInfo.path)
-    }
     Timer {
         id: refreshDirTimer
         repeat: false
         interval: 1000
         onTriggered: mainView.refreshDir();
+    }
+    Timer {
+        id: autoPhotoUploadTimer
+        repeat: false
+        interval: 1000
+        onTriggered: {
+            var photoesToUpload = uploadFile.photosToUpload();
+            if (photoesToUpload.length > 0) {
+                _filesPage.uploadFilesInCurrentDirectory2(photoesToUpload, settings.dropboxPhotoUploadPath);
+            }
+        }
     }
 }

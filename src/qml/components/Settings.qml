@@ -3,6 +3,8 @@ import U1db 1.0 as U1db
 Item {
     property string token: ""
     property string tokenSecret: ""
+    property bool photoUploadEnabled: true
+    property string dropboxPhotoUploadPath: ""
     signal loadFinished();
     U1db.Database {
         id: aDatabase
@@ -17,16 +19,38 @@ Item {
     }
     function load() {
         var settingsDoc = aDocument.contents;
+        if (settingsDoc == undefined) {
+            settingsDoc = { };
+        }
+
+        //check integrity
+        var writeBack = false;
+        if (settingsDoc.token == undefined) {
+            settingsDoc.token = "";
+            writeBack = true;
+        }
+        if (settingsDoc.tokenSecret == undefined) {
+            settingsDoc.tokenSecret = "";
+            writeBack = true;
+        }
+        if (settingsDoc.photoUploadEnabled == undefined) {
+            settingsDoc.photoUploadEnabled = false;
+            writeBack = true;
+        }
+        if (settingsDoc.dropboxPhotoUploadPath == undefined) {
+            settingsDoc.dropboxPhotoUploadPath = "";
+            writeBack = true;
+        }
+        if (writeBack) {
+            aDocument.contents = settingsDoc;
+        }
+
         if (settingsDoc !== undefined){
+            token = settingsDoc.token;
+            tokenSecret = settingsDoc.tokenSecret;
+            photoUploadEnabled = settingsDoc.photoUploadEnabled
+            dropboxPhotoUploadPath = settingsDoc.dropboxPhotoUploadPath
             console.log (JSON.stringify(settingsDoc));
-            if (settingsDoc.hasOwnProperty("token")) {
-                token = settingsDoc.token;
-                console.log ("load token " + token);
-            }
-            if (settingsDoc.hasOwnProperty("tokenSecret")) {
-                tokenSecret = settingsDoc.tokenSecret;
-                console.log ("load tokenSecret " + tokenSecret);
-            }
         }
         loadFinished();
     }
@@ -36,6 +60,8 @@ Item {
             settingsDoc = {};
         settingsDoc["token"] = token;
         settingsDoc["tokenSecret"] = tokenSecret;
+        settingsDoc["photoUploadEnabled"] = photoUploadEnabled;
+        settingsDoc["dropboxPhotoUploadPath"] = dropboxPhotoUploadPath;
         aDocument.contents = settingsDoc;
     }
     function logout() {

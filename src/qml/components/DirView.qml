@@ -11,6 +11,8 @@ Item {
     property int selectedCount: 0;
     property int folderSelectedCount: 0;
     property var model;
+    property bool dirOnly: false
+    property bool inEditMode: false
 
     clip: true
     function reset() {
@@ -63,7 +65,7 @@ Item {
                     anchors.fill: parent
                     enabled: mainView.isOnline || fileGridItem.cachedLocally
                     onClicked: {
-                        if (modelData.is_dir && filesPage.state != "edit") {
+                        if (modelData.is_dir && !inEditMode) {
                             mainView.listDir(modelData.path);
                             root.reset();
                             return;
@@ -125,15 +127,17 @@ Item {
                 property bool selected;
                 property bool cachedLocally: DownloadFile.fileExists(modelData.path) || (modelData.is_dir && (metaDb.get(modelData.path) !== undefined))
                 text: Utils.getFileNameFromPath(modelData.path)
-
+                visible: dirOnly ? modelData.is_dir : true
                 iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
                 iconFrame: false
                 opacity: (mainView.isOnline || fileListItem.cachedLocally) ? 1 : 0.6
 
                 enabled: mainView.isOnline || fileListItem.cachedLocally
+                height: visible ? units.gu(6) : 0
+                showDivider: false
                 Component.onCompleted: selected = root.selectedIndexes.indexOf(index) > -1
                 onClicked: {
-                    if (modelData.is_dir && !filesPage.editMode) {
+                    if (modelData.is_dir && !inEditMode) {
                         mainView.listDir(modelData.path);
                         root.reset();
                         return;

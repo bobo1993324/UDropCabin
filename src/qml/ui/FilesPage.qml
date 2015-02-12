@@ -94,7 +94,7 @@ Page {
             uploadFilesInCurrentDirectory2(localFilesPath);
         }
     }
-    function uploadFilesInCurrentDirectory2(localFilesPath) {
+    function uploadFilesInCurrentDirectory2(localFilesPath, dropboxPath) {
         var files = localFilesPath;
         var uploadProgressDialog = PopupUtils.open(Qt.resolvedUrl("../components/ProgressDialog.qml"), filesPage, {
                                                      isDownloading: false
@@ -103,7 +103,7 @@ Page {
             var sourcePath = files[i].replace("file://", "");
             uploadProgressDialog.currentFileName = Utils.getFileNameFromPath(sourcePath);
             UploadFile.upload(sourcePath,
-                mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
+                (dropboxPath ? dropboxPath : mainView.fileMetaInfo.path) + "/" + Utils.getFileNameFromPath(sourcePath));
         }
         uploadProgressDialog.close();
         mainView.refreshDir();
@@ -299,6 +299,7 @@ Page {
         }
 
         model: mainView.fileMetaInfo.contents
+        inEditMode: filesPage.state == "edit"
         onSelectedCountChanged: {
             filesPage.editMode = selectedCount > 0;
         }
