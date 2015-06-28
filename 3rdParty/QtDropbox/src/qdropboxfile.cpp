@@ -90,8 +90,9 @@ bool QDropboxFile::open(QIODevice::OpenMode mode)
 
 void QDropboxFile::close()
 {
-	if(isMode(QIODevice::WriteOnly))
-		flush();
+    //No close write always flush
+//	if(isMode(QIODevice::WriteOnly))
+//		flush();
 	QIODevice::close();
 	return;
 }
@@ -202,7 +203,8 @@ qint64 QDropboxFile::writeData(const char *data, qint64 len)
 
     // flush if the threshold is reached
     _currentThreshold += len;
-    if(_currentThreshold > _bufferThreshold)
+    //always flush on write
+    //if(_currentThreshold > _bufferThreshold)
         flush();
 
 	int written_bytes = len;

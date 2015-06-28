@@ -7,7 +7,7 @@
 class TaskWithProgress : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(float progress READ progress NOTIFY progressChanged);
+    Q_PROPERTY(float progress READ progress NOTIFY progressChanged)
 public:
     explicit TaskWithProgress(QObject *parent = 0);
     float progress();

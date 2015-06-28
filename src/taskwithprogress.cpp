@@ -25,5 +25,7 @@ void TaskWithProgress::connectQDropboxFile(QDropboxFile *file)
 
 void TaskWithProgress::handleDownloadProgress(qint64 downloaded, qint64 total)
 {
+    qDebug() << "TaskWithProgress::handleDownloadProgress" << downloaded << total;
+    if (total == 0) return;
     setProgress(downloaded / (float) total);
 }
