@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QFileInfo>
+#include <QMimeDatabase>
 DownloadFile::DownloadFile(QDropbox * qdropbox)
     : TaskWithProgress() {
     currentFile = new QDropboxFile(qdropbox);
@@ -62,6 +63,13 @@ int DownloadFile::localCacheSize()
     } else {
         return 0;
     }
+}
+
+QString DownloadFile::iconNameForMimeType(QString mimetype)
+{
+    QMimeDatabase mimeDB;
+    QMimeType mimeType = mimeDB.mimeTypeForName(mimetype);
+    return mimeType.iconName();
 }
 
 int DownloadFile::getDirSize(QDir dir)

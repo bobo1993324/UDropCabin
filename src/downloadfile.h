@@ -13,6 +13,7 @@ public:
     Q_INVOKABLE QDateTime getDateTimeUTC(QString dateTime, QString format);
     Q_INVOKABLE void clear();
     Q_INVOKABLE int localCacheSize();
+    Q_INVOKABLE QString iconNameForMimeType(QString mimetype);
 signals:
     void progressChanged();
 private:

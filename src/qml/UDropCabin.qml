@@ -208,6 +208,7 @@ MainView {
     function listDir(path) {
         console.log("listDir " + path)
         var newDir = metaDb.get(path);
+//        console.log(JSON.stringify(newDir));
         if (newDir !== undefined)
             fileMetaInfo = newDir
         if (mainView.isOnline) {

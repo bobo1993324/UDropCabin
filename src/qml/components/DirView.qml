@@ -11,6 +11,7 @@ Item {
     property int selectedCount: 0;
     property int folderSelectedCount: 0;
     property var model;
+    property string fallbackIconSource: "image://theme/empty"
 
     clip: true
     function reset() {
@@ -18,6 +19,14 @@ Item {
         selectedCount = 0;
         folderSelectedCount = 0;
     }
+
+    function getIconSource(modelData) {
+        if (modelData.is_dir)
+            return "image://theme/folder"
+        else
+            return "image://theme/" + DownloadFile.iconNameForMimeType(modelData.mime_type);
+    }
+
     Loader {
         id: viewLoader
         sourceComponent: root.format == "list" ? dirListComponent : dirGridComponent
@@ -46,11 +55,15 @@ Item {
                 Column {
                     id: contentColumn
                     anchors.centerIn: parent
-                    Icon {
+                    Image {
                         width: units.gu(6);
                         height: width
-                        source: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
+                        source: root.getIconSource(modelData)
                         anchors.horizontalCenter: parent.horizontalCenter
+                        onStatusChanged: {
+                            if (status == Image.Error)
+                                source = root.fallbackIconSource
+                        }
                     }
                     Label {
                         text: Utils.getFileNameFromPath(modelData.path)
@@ -126,7 +139,8 @@ Item {
                 property bool cachedLocally: DownloadFile.fileExists(modelData.path) || (modelData.is_dir && (metaDb.get(modelData.path) !== undefined))
                 text: Utils.getFileNameFromPath(modelData.path)
 
-                iconSource: Qt.resolvedUrl("../graphics/dropbox-api-icons/48x48/" + modelData.icon + "48.gif")
+                iconSource: root.getIconSource(modelData)
+                fallbackIconSource: root.fallbackIconSource
                 iconFrame: false
                 opacity: (mainView.isOnline || fileListItem.cachedLocally) ? 1 : 0.6
 
