@@ -43,7 +43,7 @@ Item {
             height: root.height
 
             model: root.model
-            cellHeight: units.gu(14)
+            cellHeight: Math.min(root.width / 3, units.gu(14))
             cellWidth: cellHeight
             delegate: Item {
                 id: fileGridItem
