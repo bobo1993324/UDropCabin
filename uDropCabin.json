@@ -1,5 +1,6 @@
 {
     "policy_groups": [
+        "accounts",
         "networking",
         "content_exchange_source",
         "content_exchange",

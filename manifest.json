@@ -8,7 +8,13 @@
         "uDropCabin": {
             "apparmor": "uDropCabin.json",
             "content-hub": "uDropCabin-content.json",
-            "desktop": "uDropCabin.desktop"
+            "desktop": "uDropCabin.desktop",
+            "account-application": "com.ubuntu.developer.bobo1993324.udropcabin_uDropCabin.application",
+            "account-service": "com.ubuntu.developer.bobo1993324.udropcabin_uDropCabin.service"
+        },
+        "account-plugin": {
+            "account-provider": "com.ubuntu.developer.bobo1993324.udropcabin_account-plugin.provider",
+            "account-qml-plugin": "account_plugin"
         }
     },
     "version": "0.2.2",

@@ -32,20 +32,32 @@ qt5_use_modules(udropcabin Core Quick Xml Network)
 
 add_subdirectory("src/qml")
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/qml DESTINATION /)
+install(DIRECTORY
+    ${CMAKE_SOURCE_DIR}/src/qml
+    ${CMAKE_SOURCE_DIR}/account_plugin
+    DESTINATION /
+)
+
 install(PROGRAMS ${CMAKE_BINARY_DIR}/udropcabin DESTINATION /)
-install(FILES
-    ${CMAKE_SOURCE_DIR}/uDropCabin-content.json
+
+set(MANIFEST_FILES
     ${CMAKE_SOURCE_DIR}/manifest.json
     ${CMAKE_SOURCE_DIR}/uDropCabin.desktop
     ${CMAKE_SOURCE_DIR}/uDropCabin.json
+    ${CMAKE_SOURCE_DIR}/uDropCabin-content.json
+    ${CMAKE_SOURCE_DIR}/com.ubuntu.developer.bobo1993324.udropcabin_uDropCabin.service
+    ${CMAKE_SOURCE_DIR}/com.ubuntu.developer.bobo1993324.udropcabin_uDropCabin.application
+    ${CMAKE_SOURCE_DIR}/com.ubuntu.developer.bobo1993324.udropcabin_account-plugin.provider
     ${CMAKE_SOURCE_DIR}/logo.png
+    ${CMAKE_SOURCE_DIR}/dropbox-linux.png
+)
+
+install(FILES
+    ${MANIFEST_FILES}
     DESTINATION /
 )
 
 add_custom_target(manifest ALL SOURCES
-    ${CMAKE_SOURCE_DIR}/manifest.json
-    ${CMAKE_SOURCE_DIR}/uDropCabin.desktop
-    ${CMAKE_SOURCE_DIR}/uDropCabin.json
-    ${CMAKE_SOURCE_DIR}/uDropCabin-content.json
+    ${MANIFEST_FILES}
+    ${CMAKE_SOURCE_DIR}/account_plugin/Main.qml
 )

@@ -1,0 +1,5 @@
+<service>
+    <type>file-share</type>
+    <name>UDropCabin</name>
+    <provider>com.ubuntu.developer.bobo1993324.udropcabin_account-plugin</provider>
+</service>

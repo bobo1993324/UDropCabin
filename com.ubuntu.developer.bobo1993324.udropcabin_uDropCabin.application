@@ -1,0 +1,9 @@
+<application>
+    <description>A Dropbox client</description>
+    <desktop-entry>uDropCabin.desktop</desktop-entry>
+    <services>
+        <service id="com.ubuntu.developer.bobo1993324.udropcabin_uDropCabin">
+            <description>A Dropbox client.</description>
+        </service>
+    </services>
+</application>

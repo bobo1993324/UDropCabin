@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<provider>
+    <name>Dropbox</name>
+    <icon>dropbox-linux.png</icon>
+    <description>Store files.</description>
+    <domains>.*dropbox\.com</domains>
+    <template>
+        <group name="auth">
+        <setting name="method">oauth2</setting>
+        <setting name="mechanism">user_agent</setting>
+            <group name="oauth2">
+                <group name="user_agent">
+                    <setting name="Host">www.dropbox.com</setting>
+                    <setting name="AuthPath">1/oauth2/authorize</setting>
+                    <setting name="TokenPath">1/oauth2/token</setting>
+                    <setting name="RedirectUri">http://localhost/</setting>
+                    <setting name="ResponseType">token</setting>
+                    <setting name="ClientId">2n3x34hh0g822al</setting>
+                    <setting name="ClientSecret">3lb111pil5xfgjq</setting>
+                    <setting type="as" name="AllowedSchemes">['https','http']</setting>
+                    <setting type="b" name="ForceClientAuthViaRequestBody">true</setting>
+                </group>
+            </group>
+        </group>
+    </template>
+</provider>
+
