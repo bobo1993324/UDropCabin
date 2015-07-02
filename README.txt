@@ -1,4 +1,7 @@
 UDropCabin
+
+A Dropbox client for Ubuntu phone
+
 ==========
 
 How to Build?
