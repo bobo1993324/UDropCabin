@@ -106,7 +106,7 @@ Page {
                 mainView.fileMetaInfo.path + "/" + Utils.getFileNameFromPath(sourcePath));
         }
         uploadProgressDialog.close();
-        mainView.refreshDir();
+        refreshTimer.start();
     }
     Action {
         id: cancelAction
@@ -365,6 +365,15 @@ Page {
         anchors.centerIn: parent
         visible: running
         running: mainView.busy
+        }
+    }
+
+    Timer {
+        id: refreshTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            mainView.refreshDir();
         }
     }
 }
