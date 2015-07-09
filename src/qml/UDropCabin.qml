@@ -2,7 +2,6 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Content 0.1
 import Ubuntu.Components.Popups 1.0
-import Ubuntu.Connectivity 1.0
 import "components"
 import "ui"
 
@@ -32,7 +31,7 @@ MainView {
     property var contentTransfer;
     property list<ContentItem> transferItemList
     property bool busy: false
-    property bool isOnline: NetworkingStatus.online
+    property bool isOnline: true
     property bool importingFiles: false;
     property bool exportingFiles: false
     onIsOnlineChanged: {
@@ -165,8 +164,9 @@ MainView {
             console.log("Error " + errorcode)
             if (errorcode == 1) {
                 console.log("communication error")
-                busy = false
+                busy = false;
             }
+            isOnline = false;
         }
         onFileDeleteCompleted: {
             console.log("delete complete")

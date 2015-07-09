@@ -21,11 +21,11 @@ Item {
             console.log (JSON.stringify(settingsDoc));
             if (settingsDoc.hasOwnProperty("token")) {
                 token = settingsDoc.token;
-                console.log ("load token " + token);
+                console.log ("load token " + "xxxxxxx");
             }
             if (settingsDoc.hasOwnProperty("tokenSecret")) {
                 tokenSecret = settingsDoc.tokenSecret;
-                console.log ("load tokenSecret " + tokenSecret);
+                console.log ("load tokenSecret " + "xxxxxxx");
             }
         }
         loadFinished();
