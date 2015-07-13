@@ -6,7 +6,7 @@ import "../js/Utils.js" as Utils
 Item {
     id: root
     property int selectMode: 0 //0: multiple, 1: single, 2:none
-    property string format: "grid" // list or grid
+    property string format: mainView.settings.lastViewType // list or grid, set after settings load complete
     property var selectedIndexes: {[]}
     property int selectedCount: 0;
     property int folderSelectedCount: 0;

@@ -3,6 +3,7 @@ import U1db 1.0 as U1db
 Item {
     property string token: ""
     property string tokenSecret: ""
+    property string lastViewType: "grid" // grid or list
     signal loadFinished();
     U1db.Database {
         id: aDatabase
@@ -27,6 +28,10 @@ Item {
                 tokenSecret = settingsDoc.tokenSecret;
                 console.log ("load tokenSecret " + "xxxxxxx");
             }
+            if (settingsDoc.hasOwnProperty("lastViewType")) {
+                lastViewType = settingsDoc.lastViewType;
+                console.log ("load lastViewType " + lastViewType);
+            }
         }
         loadFinished();
     }
@@ -36,6 +41,7 @@ Item {
             settingsDoc = {};
         settingsDoc["token"] = token;
         settingsDoc["tokenSecret"] = tokenSecret;
+        settingsDoc["lastViewType"] = lastViewType;
         aDocument.contents = settingsDoc;
     }
     function logout() {

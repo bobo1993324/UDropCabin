@@ -34,6 +34,7 @@ MainView {
     property bool isOnline: true
     property bool importingFiles: false;
     property bool exportingFiles: false
+    property alias settings: settings
     onIsOnlineChanged: {
 	console.log("isOnlineChanged", isOnline);
         if (!isOnline && fileMetaInfo.path === undefined) {

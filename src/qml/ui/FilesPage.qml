@@ -269,6 +269,8 @@ Page {
         iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
         onTriggered: {
             dirView.format = (listView ? "grid" : "list");
+            settings.lastViewType = dirView.format;
+            settings.save();
         }
     }
     Action {
