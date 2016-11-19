@@ -4,7 +4,7 @@ import Ubuntu.Web 0.2
 import "../js/Utils.js" as Utils
 Page {
     id: loginPage
-    title: "Login"
+    title: i18n.tr("Login")
     property alias url: webView.url
     head {
         backAction: Action {
