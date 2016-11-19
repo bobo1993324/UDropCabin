@@ -44,7 +44,7 @@ Popups.PopupBase  {
         customPeerModelLoader: Loader {
             sourceComponent: customContentModelComponent
         }
-        headerText: picker.isUpload ? "Upload from" : "Open with"
+        headerText: picker.isUpload ? i18n.tr("Upload from") : i18n.tr("Open with")
         onPeerSelected: {
             if (!picker.isUpload) {
                 peer.selectionType = ContentTransfer.Single
