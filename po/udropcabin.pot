@@ -1,0 +1,216 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-17 23:44+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/qml/components/ContentPickerDialog.qml:47
+msgid "Upload from"
+msgstr ""
+
+#: src/qml/components/ContentPickerDialog.qml:47
+msgid "Open with"
+msgstr ""
+
+#: src/qml/components/CreateFolderDialog.qml:11 src/qml/ui/FilesPage.qml:224
+msgid "Create Folder"
+msgstr ""
+
+#: src/qml/components/CreateFolderDialog.qml:18 src/qml/ui/FilesPage.qml:201
+msgid "Confirm"
+msgstr ""
+
+#: src/qml/components/CreateFolderDialog.qml:26
+#: src/qml/components/RemoveConfirmDialog.qml:36 src/qml/ui/FilesPage.qml:37
+#: src/qml/ui/FilesPage.qml:113 src/qml/ui/FilesPage.qml:351
+msgid "Cancel"
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:16
+msgid "Override "
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:16
+msgid " ? "
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:16
+msgid "( "
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:16
+msgid " left )"
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:27
+msgid "Ignore"
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:34
+msgid "Ignore All"
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:44
+msgid "Override"
+msgstr ""
+
+#: src/qml/components/OverrideConfirmDialog.qml:50
+msgid "Override All"
+msgstr ""
+
+#: src/qml/components/RemoveConfirmDialog.qml:12
+#, qt-format
+msgid "Delete %1 files"
+msgstr ""
+
+#: src/qml/components/CurrentPathHeader.qml:12
+msgid "No network"
+msgstr ""
+
+#: src/qml/components/ProgressDialog.qml:10
+msgid "Downloading"
+msgstr ""
+
+#: src/qml/components/ProgressDialog.qml:10
+msgid "Uploading"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:9 src/qml/ui/AboutPage.qml:18
+msgid "UDropCabin"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:129 src/qml/ui/FileDetailPage.qml:10
+msgid "Property"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:138
+msgid "Delete"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:161
+msgid "Open"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:212
+msgid "Up"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:237 src/qml/ui/FilesPage.qml:346
+msgid "Upload"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:251
+msgid "Edit"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:260
+msgid "Refresh"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:268
+msgid "Grid View"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:268
+msgid "List View"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:278 src/qml/ui/SettingsPage.qml:6
+msgid "Settings"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:286 src/qml/ui/AboutPage.qml:5
+msgid "About"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:318
+msgid "Edit mode: "
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:318
+msgid " files selected"
+msgstr ""
+
+#: src/qml/ui/FilesPage.qml:339
+msgid "Select"
+msgstr ""
+
+#: src/qml/ui/AboutPage.qml:24
+msgid ""
+"This is an UNOFFICIAL dropbox app. You can list files, open them in other "
+"apps.\n"
+"\n"
+"Thanks to QtDropbox(http://lycis.github.io/QtDropbox/) which provides api "
+"the app calls.\n"
+"\n"
+"Author: Boren Zhang <bobo1993324@gmail.com>\n"
+"\n"
+"Source code & report issue @ https://github.com/bobo1993324/UDropCabin\n"
+"\n"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:11
+msgid "User Info"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:14
+msgid "Name"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:17 src/qml/ui/SettingsPage.qml:23
+#: src/qml/ui/SettingsPage.qml:30
+msgid "Not Available"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:21
+msgid "Email"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:27
+msgid "Quota"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:35
+msgid "Logout"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:48
+msgid "Local cache"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:51
+msgid "Local cache size"
+msgstr ""
+
+#: src/qml/ui/SettingsPage.qml:62
+msgid "Clear local cache"
+msgstr ""
+
+#: src/qml/ui/LoginPage.qml:7
+msgid "Login"
+msgstr ""
+
+#: src/qml/ui/FileDetailPage.qml:37
+msgid "Size"
+msgstr ""
+
+#: src/qml/ui/FileDetailPage.qml:43
+msgid "Modified"
+msgstr ""
+
+#: src/qml/ui/FileDetailPage.qml:49
+msgid "Mime-type"
+msgstr ""
