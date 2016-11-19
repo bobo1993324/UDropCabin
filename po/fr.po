@@ -29,7 +29,8 @@ msgstr "Ouvrir avec"
 msgid "Create Folder"
 msgstr "Créer un dossier"
 
-#: src/qml/components/CreateFolderDialog.qml:18 src/qml/ui/FilesPage.qml:201
+#: src/qml/components/CreateFolderDialog.qml:18
+#: src/qml/components/RemoveConfirmDialog.qml:29 src/qml/ui/FilesPage.qml:201
 msgid "Confirm"
 msgstr "Confirmer"
 
