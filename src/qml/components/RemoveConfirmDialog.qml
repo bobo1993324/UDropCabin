@@ -26,7 +26,7 @@ Popups.Dialog {
         }
     }
     Button {
-        text: i18n.tr"Confirm")
+        text: i18n.tr("Confirm")
         onTriggered: {
             dialog.confirmed();
             PopupUtils.close(dialog);
