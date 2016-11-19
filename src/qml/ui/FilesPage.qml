@@ -6,7 +6,7 @@ import "../js/Utils.js" as Utils
 import "../components"
 Page {
     id: filesPage
-    title: "UDropCabin"
+    title: i18n.tr("UDropCabin")
     property bool editMode: false;
     state: mainView.exportingFiles ? "export" : (mainView.importingFiles ? "import" : (editMode ? "edit" : "navigate"))
     states: [
@@ -34,7 +34,7 @@ Page {
                 infoAction
             ]
             backAction: Action {
-                text: "Cancel"
+                text: i18n.tr("Cancel")
                 iconName: "close"
                 onTriggered: {
                     filesPage.editMode = false;
@@ -110,7 +110,7 @@ Page {
     }
     Action {
         id: cancelAction
-        text: "Cancel"
+        text: i18n.tr("Cancel")
         iconName: "close"
         onTriggered: {
             if (filesPage.state == "import")
@@ -126,7 +126,7 @@ Page {
         id: infoAction
         enabled: dirView.selectedCount == 1
         iconName: "info"
-        text: "Property"
+        text: i18n.tr("Property")
         onTriggered: {
             pageStack.push(Qt.resolvedUrl("./FileDetailPage.qml"), {file: mainView.fileMetaInfo.contents[dirView.selectedIndexes[0]]})
             dirView.reset()
@@ -135,7 +135,7 @@ Page {
     Action {
         id: deleteAction
         iconName: "delete"
-        text: "Delete"
+        text: i18n.tr("Delete")
         enabled: dirView.selectedCount >= 1 && mainView.isOnline
         onTriggered: {
             var selectedFiles = [];
@@ -158,7 +158,7 @@ Page {
     Action {
         id: openAction
         iconName: "external-link"
-        text: "Open"
+        text: i18n.tr("Open")
         enabled: dirView.selectedCount >= 1 && dirView.folderSelectedCount == 0
         onTriggered: {
             var files = [];
@@ -198,7 +198,7 @@ Page {
     }
     Action {
         id: confirmImportAction
-        text: "Confirm"
+        text: i18n.tr("Confirm")
         iconName: "tick"
         onTriggered: {
             var transferItems = mainView.contentTransfer.items;
@@ -209,7 +209,7 @@ Page {
     }
     Action {
        id: upAction
-       text: "Up"
+       text: i18n.tr("Up")
        iconName: "back"
        enabled: mainView.fileMetaInfo.path !== "/"
        onTriggered: {
@@ -221,7 +221,7 @@ Page {
         id: createFolderAction
         enabled: mainView.isOnline
         iconSource: Qt.resolvedUrl("../graphics/new-folder.svg")
-        text: "Create Folder"
+        text: i18n.tr("Create Folder")
         onTriggered: {
             var createFolderDialog = PopupUtils.open(Qt.resolvedUrl("../components/CreateFolderDialog.qml"))
             createFolderDialog.createFolder.connect(function(folderName) {
@@ -234,7 +234,7 @@ Page {
 
     Action {
         id: uploadAction
-        text: "Upload"
+        text: i18n.tr("Upload")
         iconName: "note-new"
         enabled: mainView.isOnline
         onTriggered: {
@@ -248,7 +248,7 @@ Page {
     }
     Action {
         id: editAction
-        text: "Edit"
+        text: i18n.tr("Edit")
         iconName: "edit"
         enabled: mainView.isOnline
         onTriggered: {
@@ -257,7 +257,7 @@ Page {
     }
     Action {
         id: refreshAction
-        text: "Refresh"
+        text: i18n.tr("Refresh")
         iconName: "reload"
         enabled: mainView.isOnline
         onTriggered: mainView.refreshDir();
@@ -265,7 +265,7 @@ Page {
     Action {
         id: listGridViewAction
         property bool listView: dirView.format == "list"
-        text: listView ? "Grid View" : "List View"
+        text: listView ? i18n.tr("Grid View") : i18n.tr("List View")
         iconName: dirView.format == "list" ? "view-grid-symbolic" : "view-list-symbolic"
         onTriggered: {
             dirView.format = (listView ? "grid" : "list");
@@ -275,7 +275,7 @@ Page {
     }
     Action {
         id: settingAction
-        text: "Settings"
+        text: i18n.tr("Settings")
         iconName: "settings"
         onTriggered: {
             pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
@@ -283,7 +283,7 @@ Page {
     }
     Action {
         id: aboutAction
-        text: "About"
+        text: i18n.tr("About")
         iconSource: "image://theme/help"
         onTriggered: {
             pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
@@ -315,7 +315,7 @@ Page {
         width: parent.width
         anchors.bottom: openDialogSelectBar.top
         height: filesPage.state == "edit" ? units.gu(4) : 0
-        text: "Edit mode: " + dirView.selectedCount + " files selected"
+        text: i18n.tr("Edit mode: ") + dirView.selectedCount + i18n.tr(" files selected")
         clip: true
         showDivider: false;
     }
@@ -336,19 +336,19 @@ Page {
             spacing: units.gu(8)
             Button {
                 id: selectButton
-                text: "Select"
+                text: i18n.tr("Select")
                 visible: filesPage.state == "export";
                 enabled: openAction.enabled
                 onClicked: openAction.trigger();
             }
             Button {
                 id: uploadButton
-                text: "Upload"
+                text: i18n.tr("Upload")
                 visible: filesPage.state == "import";
                 onClicked: confirmImportAction.trigger();
             }
             Button {
-                text: "Cancel"
+                text: i18n.tr("Cancel")
                 onClicked: cancelAction.trigger();
             }
         }

@@ -7,7 +7,7 @@ Popups.Dialog {
     property bool isDownloading: false; //otherwise it is uploading
     property string currentFileName
     property var _targetBackendModel: isDownloading ? DownloadFile : UploadFile
-    title: isDownloading ? "Downloading" : "Uploading"
+    title: isDownloading ? i18n.tr("Downloading") : i18n.tr("Uploading")
     text: currentFileName
     ProgressBar {
         indeterminate: _targetBackendModel.progress < 0

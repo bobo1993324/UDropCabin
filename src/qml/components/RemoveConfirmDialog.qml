@@ -9,7 +9,7 @@ Popups.Dialog {
 
     signal confirmed
 
-    title: "Delete %1 files".arg(removeFilesPath.length)
+    title: i18n.tr("Delete %1 files").arg(removeFilesPath.length)
     ListView {
         id: listView
         width: parent.width
@@ -26,14 +26,14 @@ Popups.Dialog {
         }
     }
     Button {
-        text: "Confirm"
+        text: i18n.tr("Confirm")
         onTriggered: {
             dialog.confirmed();
             PopupUtils.close(dialog);
         }
     }
     Button {
-        text: "Cancel"
+        text: i18n.tr("Cancel")
         onTriggered: {
             PopupUtils.close(dialog);
         }

@@ -7,7 +7,7 @@ import "../js/Utils.js" as Utils
 import "../components"
 Page {
     id: fileDetailPage
-    title: "Property"
+    title: i18n.tr("Property")
     property var file
     Column {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -34,19 +34,19 @@ Page {
             }
         }
         ListItem.Standard {
-            text: "Size"
+            text: i18n.tr("Size")
             control: Label {
                 text: file.size
             }
         }
         ListItem.Standard {
-            text: "Modified"
+            text: i18n.tr("Modified")
             control: Label {
                 text: Qt.formatDateTime(DownloadFile.getDateTimeUTC(file.modified, "ddd, dd MMM yyyy hh:mm:ss +0000"), "MMMM d yyyy hh:mm:ss")
             }
         }
         ListItem.Standard {
-            text: "Mime-type"
+            text: i18n.tr("Mime-type")
             control: Label {
                 text: file.mime_type
             }

@@ -9,7 +9,7 @@ Item {
     }
     Label {
         color: "red"
-        text: "No network"
+        text: i18n.tr("No network")
         anchors {
             right: parent.right
             verticalCenter: parent.verticalCenter

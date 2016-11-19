@@ -13,7 +13,7 @@ Popups.Dialog {
 
     signal complete(var ignoredFiles);
 
-    title: "Override " + Utils.getFileNameFromPath(files[currentIndex]) + " ? " + "( " + (files.length - currentIndex) + " left )"
+    title: i18n.tr("Override ") + Utils.getFileNameFromPath(files[currentIndex]) + i18n.tr(" ? ") + i18n.tr("( ") + (files.length - currentIndex) + i18n.tr(" left )")
 
     function goNextQuitIfComplete() {
         currentIndex ++;
@@ -24,14 +24,14 @@ Popups.Dialog {
     }
 
     Button {
-        text: "Ignore"
+        text: i18n.tr("Ignore")
         onTriggered: {
             ignoredFiles.push(files[currentIndex]);
             goNextQuitIfComplete();
         }
     }
     Button {
-        text: "Ignore All"
+        text: i18n.tr("Ignore All")
         onTriggered: {
             for (var i = currentIndex; i < files.length; i++) {
                 ignoredFiles.push(files[i]);
@@ -41,13 +41,13 @@ Popups.Dialog {
         }
     }
     Button {
-        text: "Override"
+        text: i18n.tr("Override")
         onTriggered: {
            goNextQuitIfComplete();
         }
     }
     Button {
-        text: "Override All"
+        text: i18n.tr("Override All")
         onTriggered: {
             dialog.complete(ignoredFiles);
             PopupUtils.close(dialog);
