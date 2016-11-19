@@ -8,14 +8,14 @@ Popups.Dialog {
 
     signal createFolder(var folderName)
 
-    title: "Create Folder"
+    title: i18n.tr("Create Folder")
     TextField {
         id: folderNameTextField
         width: parent.width
     }
 
     Button {
-        text: "Confirm"
+        text: i18n.tr("Confirm")
         enabled: folderNameTextField.text.length > 0
         onTriggered: {
             dialog.createFolder(folderNameTextField.text);
@@ -23,7 +23,7 @@ Popups.Dialog {
         }
     }
     Button {
-        text: "Cancel"
+        text: i18n.tr("Cancel")
         onTriggered: {
             PopupUtils.close(dialog);
         }
